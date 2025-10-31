@@ -214,13 +214,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="max-w-[1400px] mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-slate-100 mb-2">
               {getTimeOfDay()}, {settings?.user_name || 'there'}!
             </h1>
-            <p className="text-xl text-slate-600 dark:text-slate-300">{settings?.welcome_message || 'Welcome back!'}</p>
+            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300">{settings?.welcome_message || 'Welcome back!'}</p>
           </div>
 
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 mb-8">
@@ -344,7 +344,7 @@ export default function Home() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {postItNotes.map((note) => (
               <div
                 key={note.id}

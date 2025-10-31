@@ -232,11 +232,11 @@ export default function KanbanBoard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="max-w-[1600px] mx-auto">
-          <div className="mb-8 flex items-center justify-between">
+          <div className="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">Task Board</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">Task Board</h1>
               <p className="text-slate-600 dark:text-slate-300">Organize and track your tasks</p>
             </div>
 
@@ -291,7 +291,7 @@ export default function KanbanBoard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <KanbanColumn
               title="To Do"
               status="todo"
@@ -325,7 +325,7 @@ export default function KanbanBoard() {
           {viewMode === 'week' && (
             <div className="mt-6">
               <h3 className="text-lg font-bold text-slate-800 mb-4 px-2">Week Overview</h3>
-              <div className="grid grid-cols-7 gap-3">
+              <div className="grid grid-cols-4 sm:grid-cols-7 gap-3">
                 {weekDays.map((day, index) => {
                   const dateStr = day.toISOString().split('T')[0];
                   const isToday = dateStr === new Date().toISOString().split('T')[0];
