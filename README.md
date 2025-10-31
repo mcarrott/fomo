@@ -1,1 +1,2 @@
 Rasengan!
+Bankai.
