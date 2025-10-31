@@ -31,9 +31,9 @@ export default function App() {
   }
 
   return (
-    <>
+    <div className="flex h-screen overflow-hidden">
       <Navigation currentView={currentView} onViewChange={setCurrentView} />
-      <div className="pt-4">
+      <main className="flex-1 overflow-auto lg:ml-64">
         {currentView === 'home' && <Home />}
         {currentView === 'calendar' && <Calendar />}
         {currentView === 'tasks' && <KanbanBoard />}
@@ -42,7 +42,7 @@ export default function App() {
         {currentView === 'documents' && <Documents />}
         {currentView === 'finances' && <Finances />}
         {currentView === 'settings' && <Settings />}
-      </div>
-    </>
+      </main>
+    </div>
   );
 }

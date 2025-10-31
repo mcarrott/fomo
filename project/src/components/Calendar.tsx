@@ -160,12 +160,12 @@ export default function Calendar() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <div className="flex h-screen">
-        <div className="flex-1 p-8 overflow-auto">
+        <div className="flex-1 p-4 md:p-8 overflow-auto">
           <div className="max-w-[1400px] mx-auto">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8">
-              <div className="flex items-center justify-between mb-8">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-4 md:p-8">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
                 <div className="flex items-center gap-4">
-                  <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Calendar</h1>
+                  <h1 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100">Calendar</h1>
                   <button
                     onClick={handleToday}
                     className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
