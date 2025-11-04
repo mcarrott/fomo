@@ -125,26 +125,34 @@ export default function Settings() {
   };
 
   const handleSave = async () => {
-    if (!settings) return;
+    if (!user) return;
 
     setIsSaving(true);
     setSaveSuccess(false);
 
-    const { error } = await supabase
-      .from('user_settings')
-      .update({
-        user_name: userName.trim() || 'there',
-        default_event_hours: defaultEventHours,
-        welcome_message: welcomeMessage.trim() || 'Welcome back!',
-        news_category: newsCategory,
-        font_family: fontFamily,
-        theme: theme,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', settings.id);
+    const updateData = {
+      user_name: userName.trim() || 'there',
+      default_event_hours: defaultEventHours,
+      welcome_message: welcomeMessage.trim() || 'Welcome back!',
+      news_category: newsCategory,
+      font_family: fontFamily,
+      theme: theme,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error } = settings
+      ? await supabase
+          .from('user_settings')
+          .update(updateData)
+          .eq('id', settings.id)
+      : await supabase
+          .from('user_settings')
+          .insert({ ...updateData, user_id: user.id })
+          .select()
+          .single();
 
     if (error) {
-      console.error('Error updating settings:', error);
+      console.error('Error saving settings:', error);
       alert('Failed to save settings. Please try again.');
     } else {
       setSaveSuccess(true);

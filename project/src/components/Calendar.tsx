@@ -284,7 +284,7 @@ export default function Calendar() {
         <div className="flex-1 p-4 md:p-8 overflow-auto">
           <div className="max-w-[1400px] mx-auto">
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-4 md:p-8">
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
                 <div className="flex items-center gap-4 flex-wrap">
                   <h1 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100">Calendar</h1>
 
@@ -341,6 +341,12 @@ export default function Calendar() {
                     </button>
                   </div>
                 </div>
+              </div>
+
+              <div className="mb-4 px-4 py-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-sm text-blue-800 dark:text-blue-200">
+                  💡 Tip: Click and drag across multiple days to quickly create repeating events
+                </p>
               </div>
 
               <CalendarGrid
