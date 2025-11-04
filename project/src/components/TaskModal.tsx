@@ -23,7 +23,8 @@ export default function TaskModal({ clients, editingTask, onClose, onSubmit }: T
   const [title, setTitle] = useState(editingTask?.title || '');
   const [description, setDescription] = useState(editingTask?.description || '');
   const [priority, setPriority] = useState<'low' | 'med' | 'high'>(editingTask?.priority || 'med');
-  const [dueDate, setDueDate] = useState(editingTask?.due_date || today);
+  const [dueDate, setDueDate] = useState(editingTask?.due_date || '');
+  const [showDueDatePicker, setShowDueDatePicker] = useState(!!editingTask?.due_date);
 
   useEffect(() => {
     if (editingTask) {
@@ -31,9 +32,15 @@ export default function TaskModal({ clients, editingTask, onClose, onSubmit }: T
       setTitle(editingTask.title);
       setDescription(editingTask.description);
       setPriority(editingTask.priority);
-      setDueDate(editingTask.due_date);
+      setDueDate(editingTask.due_date || '');
+      setShowDueDatePicker(!!editingTask.due_date);
     }
   }, [editingTask]);
+
+  const handleEOD = () => {
+    setDueDate(today);
+    setShowDueDatePicker(true);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,14 +156,54 @@ export default function TaskModal({ clients, editingTask, onClose, onSubmit }: T
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Due Date
+              Due Date (Optional)
             </label>
-            <input
-              type="date"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            {!showDueDatePicker ? (
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowDueDatePicker(true)}
+                  className="flex-1 px-4 py-3 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors text-left"
+                >
+                  Set due date...
+                </button>
+                <button
+                  type="button"
+                  onClick={handleEOD}
+                  className="px-4 py-3 border-2 border-blue-500 bg-blue-50 text-blue-700 rounded-lg font-medium hover:bg-blue-100 transition-colors"
+                >
+                  EOD
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <input
+                    type="date"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                    className="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleEOD}
+                    className="px-4 py-3 border-2 border-blue-500 bg-blue-50 text-blue-700 rounded-lg font-medium hover:bg-blue-100 transition-colors whitespace-nowrap"
+                  >
+                    EOD
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDueDate('');
+                    setShowDueDatePicker(false);
+                  }}
+                  className="text-sm text-slate-600 hover:text-slate-800"
+                >
+                  Clear due date
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-3 pt-4">

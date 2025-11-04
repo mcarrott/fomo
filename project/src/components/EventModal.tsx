@@ -8,22 +8,25 @@ interface EventModalProps {
   clients: Client[];
   selectedDates: Date[];
   editingEvent: EventWithClient | null;
+  defaultHours: number;
   onClose: () => void;
-  onSubmit: (data: { clientId: string; title: string; eventType: 'hold' | 'book' | 'paid' }) => void;
+  onSubmit: (data: { clientId: string; title: string; eventType: 'hold' | 'book' | 'paid'; durationHours: number }) => void;
 }
 
-export default function EventModal({ clients, selectedDates, editingEvent, onClose, onSubmit }: EventModalProps) {
+export default function EventModal({ clients, selectedDates, editingEvent, defaultHours, onClose, onSubmit }: EventModalProps) {
   const [clientId, setClientId] = useState(editingEvent?.client_id || clients[0]?.id || '');
   const [title, setTitle] = useState(editingEvent?.title || '');
   const [eventType, setEventType] = useState<'hold' | 'book' | 'paid'>(editingEvent?.event_type || 'book');
+  const [durationHours, setDurationHours] = useState(editingEvent?.duration_hours || defaultHours);
 
   useEffect(() => {
     if (editingEvent) {
       setClientId(editingEvent.client_id);
       setTitle(editingEvent.title);
       setEventType(editingEvent.event_type);
+      setDurationHours(editingEvent.duration_hours || defaultHours);
     }
-  }, [editingEvent]);
+  }, [editingEvent, defaultHours]);
 
   const displayDates = editingEvent
     ? getDateRange(parseDate(editingEvent.start_date), parseDate(editingEvent.end_date))
@@ -33,7 +36,7 @@ export default function EventModal({ clients, selectedDates, editingEvent, onClo
     e.preventDefault();
     if (!clientId) return;
 
-    onSubmit({ clientId, title, eventType });
+    onSubmit({ clientId, title, eventType, durationHours });
   };
 
   const selectedClient = clients.find(c => c.id === clientId);
@@ -113,6 +116,24 @@ export default function EventModal({ clients, selectedDates, editingEvent, onClo
               placeholder="Enter event title..."
               className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Duration (hours)
+            </label>
+            <input
+              type="number"
+              min="0.5"
+              max="24"
+              step="0.5"
+              value={durationHours}
+              onChange={(e) => setDurationHours(parseFloat(e.target.value) || defaultHours)}
+              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <p className="mt-1 text-xs text-slate-500">
+              Total hours per day for this event
+            </p>
           </div>
 
           <div>

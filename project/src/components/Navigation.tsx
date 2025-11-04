@@ -61,7 +61,7 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
           {/* Logo/Brand */}
           <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex items-center justify-center">
             <img
-              src="/Screenshot 2025-10-31 172052.png"
+              src="/Fomo_alpha.png"
               alt="FOMO Logo"
               className="w-full h-auto max-w-[180px]"
             />

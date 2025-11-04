@@ -21,13 +21,16 @@ export default function TaskCard({ task, onDragStart, onEdit, onDelete }: TaskCa
   };
 
   const formatDueDate = () => {
-    const date = new Date(task.due_date);
+    if (!task.due_date) return null;
+
+    const [year, month, day] = task.due_date.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     date.setHours(0, 0, 0, 0);
 
     const diffTime = date.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
     if (diffDays === 0) return 'Today';
     if (diffDays === 1) return 'Tomorrow';
@@ -39,7 +42,10 @@ export default function TaskCard({ task, onDragStart, onEdit, onDelete }: TaskCa
   };
 
   const isOverdue = () => {
-    const date = new Date(task.due_date);
+    if (!task.due_date) return false;
+
+    const [year, month, day] = task.due_date.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     date.setHours(0, 0, 0, 0);
@@ -123,12 +129,14 @@ export default function TaskCard({ task, onDragStart, onEdit, onDelete }: TaskCa
           />
         </div>
 
-        <div className={`flex items-center gap-1 text-xs ${
-          isDone ? 'text-slate-400' : (isOverdue() ? 'text-red-600 font-semibold' : 'text-slate-600')
-        }`}>
-          <Calendar className="w-3.5 h-3.5" />
-          <span>{formatDueDate()}</span>
-        </div>
+        {formatDueDate() && (
+          <div className={`flex items-center gap-1 text-xs ${
+            isDone ? 'text-slate-400' : (isOverdue() ? 'text-red-600 font-semibold' : 'text-slate-600')
+          }`}>
+            <Calendar className="w-3.5 h-3.5" />
+            <span>{formatDueDate()}</span>
+          </div>
+        )}
       </div>
     </div>
   );

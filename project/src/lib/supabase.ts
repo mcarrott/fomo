@@ -36,10 +36,36 @@ export interface Event {
   start_date: string;
   end_date: string;
   event_type: 'hold' | 'book' | 'paid';
+  duration_hours: number;
   created_at: string;
   updated_at: string;
 }
 
 export interface EventWithClient extends Event {
   clients: Client;
+}
+
+export interface PersonalClient {
+  id: string;
+  user_id: string;
+  name: string;
+  color: string;
+  created_at: string;
+}
+
+export interface PersonalEvent {
+  id: string;
+  user_id: string;
+  personal_client_id: string;
+  title: string;
+  start_date: string;
+  end_date: string;
+  event_type: 'hold' | 'book' | 'paid';
+  duration_hours: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PersonalEventWithClient extends PersonalEvent {
+  personal_clients: PersonalClient;
 }

@@ -28,6 +28,8 @@ export default function TimeSheet() {
   const [activeTimer, setActiveTimer] = useState<TimeEntryWithClient | null>(null);
   const [elapsedMinutes, setElapsedMinutes] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'timer' | 'manual'>('timer');
+  const [editingEntry, setEditingEntry] = useState<TimeEntryWithClient | null>(null);
   const [selectedClient, setSelectedClient] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'date' | 'client' | 'duration'>('date');
   const { user } = useAuth();
@@ -199,6 +201,73 @@ export default function TimeSheet() {
     }
   };
 
+  const handleCreateManualEntry = async (
+    taskName: string,
+    clientId: string | null,
+    date: string,
+    startTime: string,
+    endTime: string,
+    durationMinutes: number
+  ) => {
+    const { error } = await supabase
+      .from('time_entries')
+      .insert({
+        client_id: clientId,
+        task_name: taskName,
+        start_time: startTime,
+        end_time: endTime,
+        duration_minutes: durationMinutes,
+        is_running: false,
+        date: date,
+        user_id: user?.id,
+      });
+
+    if (error) {
+      console.error('Error creating manual entry:', error);
+    } else {
+      await fetchTimeEntries();
+      setIsModalOpen(false);
+      setEditingEntry(null);
+    }
+  };
+
+  const handleUpdateManualEntry = async (
+    entryId: string,
+    taskName: string,
+    clientId: string | null,
+    date: string,
+    startTime: string,
+    endTime: string,
+    durationMinutes: number
+  ) => {
+    const { error } = await supabase
+      .from('time_entries')
+      .update({
+        client_id: clientId,
+        task_name: taskName,
+        start_time: startTime,
+        end_time: endTime,
+        duration_minutes: durationMinutes,
+        date: date,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', entryId);
+
+    if (error) {
+      console.error('Error updating manual entry:', error);
+    } else {
+      await fetchTimeEntries();
+      setIsModalOpen(false);
+      setEditingEntry(null);
+    }
+  };
+
+  const handleEditEntry = (entry: TimeEntryWithClient) => {
+    setEditingEntry(entry);
+    setModalMode('manual');
+    setIsModalOpen(true);
+  };
+
   const formatTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
@@ -268,13 +337,30 @@ export default function TimeSheet() {
                     Stop Timer
                   </button>
                 ) : (
-                  <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
-                  >
-                    <Play className="w-5 h-5" />
-                    Start Timer
-                  </button>
+                  <>
+                    <button
+                      onClick={() => {
+                        setModalMode('timer');
+                        setEditingEntry(null);
+                        setIsModalOpen(true);
+                      }}
+                      className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+                    >
+                      <Play className="w-5 h-5" />
+                      Start Timer
+                    </button>
+                    <button
+                      onClick={() => {
+                        setModalMode('manual');
+                        setEditingEntry(null);
+                        setIsModalOpen(true);
+                      }}
+                      className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl"
+                    >
+                      <Plus className="w-5 h-5" />
+                      Add Entry
+                    </button>
+                  </>
                 )}
               </div>
             </div>
@@ -338,6 +424,7 @@ export default function TimeSheet() {
             <TimeEntryList
               entries={filteredEntries}
               onDelete={handleDeleteEntry}
+              onEdit={handleEditEntry}
               formatTime={formatTime}
             />
           </div>
@@ -346,9 +433,16 @@ export default function TimeSheet() {
 
       {isModalOpen && (
         <TimeEntryModal
+          mode={modalMode}
           clients={clients}
-          onClose={() => setIsModalOpen(false)}
+          editingEntry={editingEntry}
+          onClose={() => {
+            setIsModalOpen(false);
+            setEditingEntry(null);
+          }}
           onStart={handleStartTimer}
+          onCreateManual={handleCreateManualEntry}
+          onUpdateManual={handleUpdateManualEntry}
         />
       )}
     </div>

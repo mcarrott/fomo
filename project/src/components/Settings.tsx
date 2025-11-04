@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, User, MessageSquare, Newspaper, Type, Lock, AlertTriangle, Eye, EyeOff, Moon, Sun } from 'lucide-react';
+import { Save, User, MessageSquare, Newspaper, Type, Lock, AlertTriangle, Eye, EyeOff, Moon, Sun, Clock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -10,6 +10,7 @@ interface UserSettings {
   news_category: string;
   font_family: string;
   theme: string;
+  default_event_hours: number;
 }
 
 const NEWS_CATEGORIES = [
@@ -36,6 +37,7 @@ export default function Settings() {
   const [newsCategory, setNewsCategory] = useState('general');
   const [fontFamily, setFontFamily] = useState('inter');
   const [theme, setTheme] = useState('light');
+  const [defaultEventHours, setDefaultEventHours] = useState(8);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -59,10 +61,12 @@ export default function Settings() {
   }, [user]);
 
   async function fetchSettings() {
+    if (!user) return;
+
     const { data, error } = await supabase
       .from('user_settings')
       .select('*')
-      .limit(1)
+      .eq('user_id', user.id)
       .maybeSingle();
 
     if (error) {
@@ -74,6 +78,40 @@ export default function Settings() {
       setNewsCategory(data.news_category);
       setFontFamily(data.font_family || 'inter');
       setTheme(data.theme || 'light');
+      setDefaultEventHours(data.default_event_hours || 8);
+      applyTheme(data.theme || 'light');
+    } else {
+      await createDefaultSettings();
+    }
+  }
+
+  async function createDefaultSettings() {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('user_settings')
+      .insert({
+        user_id: user.id,
+        user_name: 'there',
+        welcome_message: 'Welcome back!',
+        news_category: 'general',
+        font_family: 'inter',
+        theme: 'light',
+        default_event_hours: 8,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating default settings:', error);
+    } else if (data) {
+      setSettings(data);
+      setUserName(data.user_name);
+      setWelcomeMessage(data.welcome_message);
+      setNewsCategory(data.news_category);
+      setFontFamily(data.font_family || 'inter');
+      setTheme(data.theme || 'light');
+      setDefaultEventHours(data.default_event_hours || 8);
       applyTheme(data.theme || 'light');
     }
   }
@@ -96,6 +134,7 @@ export default function Settings() {
       .from('user_settings')
       .update({
         user_name: userName.trim() || 'there',
+        default_event_hours: defaultEventHours,
         welcome_message: welcomeMessage.trim() || 'Welcome back!',
         news_category: newsCategory,
         font_family: fontFamily,
@@ -274,6 +313,36 @@ export default function Settings() {
                 </select>
                 <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                   Your news feed will show articles from this category
+                </p>
+              </div>
+            </div>
+
+            <div className="border-t border-slate-200 pt-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-cyan-100 rounded-lg">
+                  <Clock className="w-5 h-5 text-cyan-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Calendar Settings</h2>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">Configure calendar event defaults</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                  Default Event Duration (hours)
+                </label>
+                <input
+                  type="number"
+                  min="0.5"
+                  max="24"
+                  step="0.5"
+                  value={defaultEventHours}
+                  onChange={(e) => setDefaultEventHours(parseFloat(e.target.value) || 8)}
+                  className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                />
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  New calendar events will default to this duration (can be edited per event)
                 </p>
               </div>
             </div>

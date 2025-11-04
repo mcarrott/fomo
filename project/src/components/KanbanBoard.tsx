@@ -137,6 +137,9 @@ export default function KanbanBoard() {
       updates.due_date = newDueDate;
     }
 
+    const wasNotDone = draggedTask.status !== 'done';
+    const isNowDone = newStatus === 'done';
+
     const { error } = await supabase
       .from('tasks')
       .update(updates)
@@ -145,6 +148,10 @@ export default function KanbanBoard() {
     if (error) {
       console.error('Error updating task status:', error);
     } else {
+      if (wasNotDone && isNowDone) {
+        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a4+yVZCgvVKXv8r5HG2SX5/PAGwUdSKbu8L8dCQlJqvH0xxQNDUqo8fTHFA0NSqfx9McCBwdJqO/0xwIHB0mo7/THAgcHSajv9McWDxE9iNA3FA0NNV9xcXlzaEceWJ/h7aSGQy1YfLCfKAMHLFSe8PGzQR1ektv0wx0HD0il7fC2HQYKQKPr8LNBG2OV4/PA');
+        audio.play().catch(e => console.log('Audio play failed:', e));
+      }
       await fetchTasks();
     }
 

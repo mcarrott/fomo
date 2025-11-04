@@ -60,23 +60,53 @@ export default function Home() {
   }, [settings]);
 
   async function fetchSettings() {
+    if (!user) return;
+
     const { data, error } = await supabase
       .from('user_settings')
       .select('*')
-      .limit(1)
+      .eq('user_id', user.id)
       .maybeSingle();
 
     if (error) {
       console.error('Error fetching settings:', error);
     } else if (data) {
       setSettings(data);
+    } else {
+      await createDefaultSettings();
+    }
+  }
+
+  async function createDefaultSettings() {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('user_settings')
+      .insert({
+        user_id: user.id,
+        user_name: 'there',
+        welcome_message: 'Welcome back!',
+        news_category: 'general',
+        font_family: 'inter',
+        theme: 'light',
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating default settings:', error);
+    } else if (data) {
+      setSettings(data);
     }
   }
 
   async function fetchReminders() {
+    if (!user) return;
+
     const { data, error } = await supabase
       .from('reminders')
       .select('*')
+      .eq('user_id', user.id)
       .order('date', { ascending: true });
 
     if (error) {
@@ -87,15 +117,40 @@ export default function Home() {
   }
 
   async function fetchPostItNotes() {
+    if (!user) return;
+
     const { data, error } = await supabase
       .from('post_it_notes')
       .select('*')
+      .eq('user_id', user.id)
       .order('position', { ascending: true });
 
     if (error) {
       console.error('Error fetching post-it notes:', error);
     } else if (data) {
       setPostItNotes(data);
+    } else {
+      await createDefaultPostItNotes();
+    }
+  }
+
+  async function createDefaultPostItNotes() {
+    if (!user) return;
+
+    const defaultNotes = [
+      { user_id: user.id, content: '', color: '#FFE5E5', position: 1 },
+      { user_id: user.id, content: '', color: '#E5F3FF', position: 2 },
+      { user_id: user.id, content: '', color: '#FFFDE5', position: 3 },
+    ];
+
+    const { error } = await supabase
+      .from('post_it_notes')
+      .insert(defaultNotes);
+
+    if (error) {
+      console.error('Error creating default post-it notes:', error);
+    } else {
+      await fetchPostItNotes();
     }
   }
 

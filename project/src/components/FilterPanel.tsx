@@ -1,11 +1,14 @@
 import { Filter } from 'lucide-react';
-import { Client, EventWithClient } from '../lib/supabase';
+import { Client, EventWithClient, PersonalClient, PersonalEventWithClient } from '../lib/supabase';
 import { getEventColor } from '../utils/colorUtils';
 import { parseDate } from '../utils/dateUtils';
 
+type CalendarClient = Client | PersonalClient;
+type CalendarEvent = EventWithClient | PersonalEventWithClient;
+
 interface FilterPanelProps {
-  clients: Client[];
-  events: EventWithClient[];
+  clients: CalendarClient[];
+  events: CalendarEvent[];
   selectedClientFilter: string;
   selectedTypeFilter: string;
   onClientFilterChange: (clientId: string) => void;
@@ -23,40 +26,57 @@ export default function FilterPanel({
 
   const getStatsByType = () => {
     const stats = {
-      hold: 0,
-      book: 0,
-      paid: 0,
-      total: 0,
+      hold: { days: 0, hours: 0 },
+      book: { days: 0, hours: 0 },
+      paid: { days: 0, hours: 0 },
+      total: { days: 0, hours: 0 },
     };
 
     events.forEach(event => {
       const startDate = parseDate(event.start_date);
       const endDate = parseDate(event.end_date);
       const days = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      const hours = days * (event.duration_hours || 0);
 
-      stats[event.event_type] += days;
-      stats.total += days;
+      stats[event.event_type].days += days;
+      stats[event.event_type].hours += hours;
+      stats.total.days += days;
+      stats.total.hours += hours;
     });
 
     return stats;
   };
 
   const getStatsByClient = () => {
-    const statsMap = new Map<string, { hold: number; book: number; paid: number; total: number }>();
+    const statsMap = new Map<string, {
+      hold: { days: number; hours: number };
+      book: { days: number; hours: number };
+      paid: { days: number; hours: number };
+      total: { days: number; hours: number }
+    }>();
 
     clients.forEach(client => {
-      statsMap.set(client.id, { hold: 0, book: 0, paid: 0, total: 0 });
+      statsMap.set(client.id, {
+        hold: { days: 0, hours: 0 },
+        book: { days: 0, hours: 0 },
+        paid: { days: 0, hours: 0 },
+        total: { days: 0, hours: 0 }
+      });
     });
 
     events.forEach(event => {
-      const stats = statsMap.get(event.client_id);
+      const clientId = 'client_id' in event ? event.client_id : event.personal_client_id;
+      const stats = statsMap.get(clientId);
       if (stats) {
         const startDate = parseDate(event.start_date);
         const endDate = parseDate(event.end_date);
         const days = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        const hours = days * (event.duration_hours || 0);
 
-        stats[event.event_type] += days;
-        stats.total += days;
+        stats[event.event_type].days += days;
+        stats[event.event_type].hours += hours;
+        stats.total.days += days;
+        stats.total.hours += hours;
       }
     });
 
@@ -119,22 +139,34 @@ export default function FilterPanel({
           </h3>
 
           <div className="bg-slate-50 rounded-lg p-4 space-y-3">
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between items-center text-sm">
               <span className="text-slate-600">Holds:</span>
-              <span className="font-semibold text-slate-800">{typeStats.hold}</span>
+              <div className="text-right">
+                <div className="font-semibold text-slate-800">{typeStats.hold.days} days</div>
+                <div className="text-xs text-slate-500">{typeStats.hold.hours}h</div>
+              </div>
             </div>
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between items-center text-sm">
               <span className="text-slate-600">Bookings:</span>
-              <span className="font-semibold text-slate-800">{typeStats.book}</span>
+              <div className="text-right">
+                <div className="font-semibold text-slate-800">{typeStats.book.days} days</div>
+                <div className="text-xs text-slate-500">{typeStats.book.hours}h</div>
+              </div>
             </div>
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between items-center text-sm">
               <span className="text-slate-600">Paid:</span>
-              <span className="font-semibold text-slate-800">{typeStats.paid}</span>
+              <div className="text-right">
+                <div className="font-semibold text-slate-800">{typeStats.paid.days} days</div>
+                <div className="text-xs text-slate-500">{typeStats.paid.hours}h</div>
+              </div>
             </div>
             <div className="border-t border-slate-200 pt-2 mt-2">
-              <div className="flex justify-between text-sm font-bold">
+              <div className="flex justify-between items-center text-sm font-bold">
                 <span className="text-slate-700">Total:</span>
-                <span className="text-slate-900">{typeStats.total}</span>
+                <div className="text-right">
+                  <div className="text-slate-900">{typeStats.total.days} days</div>
+                  <div className="text-xs font-semibold text-slate-600">{typeStats.total.hours}h</div>
+                </div>
               </div>
             </div>
           </div>
@@ -163,9 +195,14 @@ export default function FilterPanel({
                         {client.name}
                       </span>
                     </div>
-                    <span className="text-xs font-bold text-slate-600">
-                      {stats.total}
-                    </span>
+                    <div className="text-right">
+                      <div className="text-xs font-bold text-slate-600">
+                        {stats.total.days} days
+                      </div>
+                      <div className="text-[10px] text-slate-500">
+                        {stats.total.hours}h
+                      </div>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2 text-xs">
@@ -173,21 +210,24 @@ export default function FilterPanel({
                       backgroundColor: getEventColor(client.color, 'paid'),
                       color: 'white'
                     }}>
-                      <div className="font-semibold">{stats.paid}</div>
+                      <div className="font-semibold">{stats.paid.days}</div>
+                      <div className="opacity-90 text-[10px]">{stats.paid.hours}h</div>
                       <div className="opacity-90">Paid</div>
                     </div>
                     <div className="text-center p-2 rounded" style={{
                       backgroundColor: getEventColor(client.color, 'book'),
                       color: 'white'
                     }}>
-                      <div className="font-semibold">{stats.book}</div>
+                      <div className="font-semibold">{stats.book.days}</div>
+                      <div className="opacity-90 text-[10px]">{stats.book.hours}h</div>
                       <div className="opacity-90">Book</div>
                     </div>
                     <div className="text-center p-2 rounded" style={{
                       backgroundColor: getEventColor(client.color, 'hold'),
                       color: 'white'
                     }}>
-                      <div className="font-semibold">{stats.hold}</div>
+                      <div className="font-semibold">{stats.hold.days}</div>
+                      <div className="opacity-90 text-[10px]">{stats.hold.hours}h</div>
                       <div className="opacity-90">Hold</div>
                     </div>
                   </div>

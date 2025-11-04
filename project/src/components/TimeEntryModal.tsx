@@ -11,19 +11,50 @@ interface TaskPreset {
   clients: Client | null;
 }
 
-interface TimeEntryModalProps {
-  clients: Client[];
-  onClose: () => void;
-  onStart: (taskName: string, clientId: string | null, saveAsPreset: boolean) => void;
+interface TimeEntry {
+  id: string;
+  client_id: string | null;
+  task_name: string;
+  start_time: string;
+  end_time: string | null;
+  duration_minutes: number;
+  date: string;
+  clients: Client | null;
 }
 
-export default function TimeEntryModal({ clients, onClose, onStart }: TimeEntryModalProps) {
-  const [taskName, setTaskName] = useState('');
-  const [clientId, setClientId] = useState<string>('');
+interface TimeEntryModalProps {
+  mode: 'timer' | 'manual';
+  clients: Client[];
+  editingEntry: TimeEntry | null;
+  onClose: () => void;
+  onStart: (taskName: string, clientId: string | null, saveAsPreset: boolean) => void;
+  onCreateManual: (taskName: string, clientId: string | null, date: string, startTime: string, endTime: string, durationMinutes: number) => void;
+  onUpdateManual: (entryId: string, taskName: string, clientId: string | null, date: string, startTime: string, endTime: string, durationMinutes: number) => void;
+}
+
+export default function TimeEntryModal({ mode, clients, editingEntry, onClose, onStart, onCreateManual, onUpdateManual }: TimeEntryModalProps) {
+  const [taskName, setTaskName] = useState(editingEntry?.task_name || '');
+  const [clientId, setClientId] = useState<string>(editingEntry?.client_id || '');
   const [saveAsPreset, setSaveAsPreset] = useState(false);
   const [presets, setPresets] = useState<TaskPreset[]>([]);
   const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'name'>('recent');
   const [showPresetManager, setShowPresetManager] = useState(false);
+
+  const [date, setDate] = useState(editingEntry?.date || new Date().toISOString().split('T')[0]);
+  const [startTime, setStartTime] = useState(() => {
+    if (editingEntry?.start_time) {
+      const dt = new Date(editingEntry.start_time);
+      return `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
+    }
+    return '09:00';
+  });
+  const [endTime, setEndTime] = useState(() => {
+    if (editingEntry?.end_time) {
+      const dt = new Date(editingEntry.end_time);
+      return `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
+    }
+    return '17:00';
+  });
 
   useEffect(() => {
     fetchPresets();
@@ -46,7 +77,42 @@ export default function TimeEntryModal({ clients, onClose, onStart }: TimeEntryM
     e.preventDefault();
     if (!taskName.trim()) return;
 
-    onStart(taskName.trim(), clientId || null, saveAsPreset);
+    if (mode === 'timer') {
+      onStart(taskName.trim(), clientId || null, saveAsPreset);
+    } else {
+      if (!date || !startTime || !endTime) return;
+
+      const startDateTime = new Date(`${date}T${startTime}:00`);
+      const endDateTime = new Date(`${date}T${endTime}:00`);
+
+      const durationMinutes = Math.floor((endDateTime.getTime() - startDateTime.getTime()) / 1000 / 60);
+
+      if (durationMinutes <= 0) {
+        alert('End time must be after start time');
+        return;
+      }
+
+      if (editingEntry) {
+        onUpdateManual(
+          editingEntry.id,
+          taskName.trim(),
+          clientId || null,
+          date,
+          startDateTime.toISOString(),
+          endDateTime.toISOString(),
+          durationMinutes
+        );
+      } else {
+        onCreateManual(
+          taskName.trim(),
+          clientId || null,
+          date,
+          startDateTime.toISOString(),
+          endDateTime.toISOString(),
+          durationMinutes
+        );
+      }
+    }
   };
 
   const handleSelectPreset = (preset: TaskPreset) => {
@@ -100,12 +166,16 @@ export default function TimeEntryModal({ clients, onClose, onStart }: TimeEntryM
         </button>
 
         <div className="p-6 border-b border-slate-200">
-          <h2 className="text-2xl font-bold text-slate-800 mb-1">Start Timer</h2>
-          <p className="text-sm text-slate-600">Select a preset or enter a new task</p>
+          <h2 className="text-2xl font-bold text-slate-800 mb-1">
+            {mode === 'timer' ? 'Start Timer' : editingEntry ? 'Edit Time Entry' : 'Add Time Entry'}
+          </h2>
+          <p className="text-sm text-slate-600">
+            {mode === 'timer' ? 'Select a preset or enter a new task' : 'Enter time entry details'}
+          </p>
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {presets.length > 0 && (
+          {mode === 'timer' && presets.length > 0 && (
             <div className="p-6 border-b border-slate-200 bg-slate-50">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
@@ -210,19 +280,65 @@ export default function TimeEntryModal({ clients, onClose, onStart }: TimeEntryM
               </div>
             </div>
 
-            <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <input
-                type="checkbox"
-                id="saveAsPreset"
-                checked={saveAsPreset}
-                onChange={(e) => setSaveAsPreset(e.target.checked)}
-                className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
-              />
-              <label htmlFor="saveAsPreset" className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
-                <Save className="w-4 h-4 text-blue-600" />
-                Save as preset for quick access
-              </label>
-            </div>
+            {mode === 'manual' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Date <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Start Time <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="time"
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      End Time <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="time"
+                      value={endTime}
+                      onChange={(e) => setEndTime(e.target.value)}
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {mode === 'timer' && (
+              <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <input
+                  type="checkbox"
+                  id="saveAsPreset"
+                  checked={saveAsPreset}
+                  onChange={(e) => setSaveAsPreset(e.target.checked)}
+                  className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
+                />
+                <label htmlFor="saveAsPreset" className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                  <Save className="w-4 h-4 text-blue-600" />
+                  Save as preset for quick access
+                </label>
+              </div>
+            )}
 
             <div className="flex gap-3 pt-2">
               <button
@@ -236,8 +352,17 @@ export default function TimeEntryModal({ clients, onClose, onStart }: TimeEntryM
                 type="submit"
                 className="flex-1 px-4 py-3 text-white bg-blue-600 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg flex items-center justify-center gap-2"
               >
-                <Play className="w-4 h-4" />
-                Start Timer
+                {mode === 'timer' ? (
+                  <>
+                    <Play className="w-4 h-4" />
+                    Start Timer
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    {editingEntry ? 'Update Entry' : 'Save Entry'}
+                  </>
+                )}
               </button>
             </div>
           </form>

@@ -1,4 +1,4 @@
-import { Trash2, Calendar } from 'lucide-react';
+import { Trash2, Calendar, Edit2 } from 'lucide-react';
 import { Client } from '../lib/supabase';
 
 interface TimeEntry {
@@ -16,10 +16,11 @@ interface TimeEntry {
 interface TimeEntryListProps {
   entries: TimeEntry[];
   onDelete: (entryId: string) => void;
+  onEdit: (entry: TimeEntry) => void;
   formatTime: (minutes: number) => string;
 }
 
-export default function TimeEntryList({ entries, onDelete, formatTime }: TimeEntryListProps) {
+export default function TimeEntryList({ entries, onDelete, onEdit, formatTime }: TimeEntryListProps) {
   const groupByClientAndDate = () => {
     const grouped: { [key: string]: { [date: string]: TimeEntry[] } } = {};
 
@@ -156,13 +157,22 @@ export default function TimeEntryList({ entries, onDelete, formatTime }: TimeEnt
                                   {formatTime(entry.duration_minutes)}
                                 </div>
                               </div>
-                              <button
-                                onClick={() => onDelete(entry.id)}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-red-50 rounded-lg"
-                                aria-label="Delete entry"
-                              >
-                                <Trash2 className="w-4 h-4 text-red-600" />
-                              </button>
+                              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button
+                                  onClick={() => onEdit(entry)}
+                                  className="p-2 hover:bg-blue-50 rounded-lg"
+                                  aria-label="Edit entry"
+                                >
+                                  <Edit2 className="w-4 h-4 text-blue-600" />
+                                </button>
+                                <button
+                                  onClick={() => onDelete(entry.id)}
+                                  className="p-2 hover:bg-red-50 rounded-lg"
+                                  aria-label="Delete entry"
+                                >
+                                  <Trash2 className="w-4 h-4 text-red-600" />
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>

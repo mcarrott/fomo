@@ -1,17 +1,19 @@
-import { EventWithClient } from '../lib/supabase';
+import { EventWithClient, PersonalEventWithClient } from '../lib/supabase';
 import { getEventColor, getEventBorderColor } from '../utils/colorUtils';
 import { X, Pencil } from 'lucide-react';
+
+type CalendarEvent = EventWithClient | PersonalEventWithClient;
 
 interface CalendarDayProps {
   date: Date;
   isSelected: boolean;
   isCurrentMonth: boolean;
   isToday: boolean;
-  events: EventWithClient[];
+  events: CalendarEvent[];
   onMouseDown: (date: Date) => void;
   onMouseEnter: (date: Date) => void;
   onEventDelete: (eventId: string) => void;
-  onEventEdit: (event: EventWithClient) => void;
+  onEventEdit: (event: CalendarEvent) => void;
 }
 
 export default function CalendarDay({
@@ -60,20 +62,23 @@ export default function CalendarDay({
       </div>
 
       <div className="space-y-1">
-        {events.map(event => (
-          <div
-            key={event.id}
-            className="event-card group relative rounded px-2 py-1 text-xs font-medium text-white shadow-sm hover:shadow-md transition-all cursor-default"
-            style={{
-              backgroundColor: getEventColor(event.clients.color, event.event_type),
-              borderLeft: `3px solid ${getEventBorderColor(event.clients.color, event.event_type)}`,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between gap-1">
-              <span className="truncate flex-1">
-                {event.title || event.clients.name}
-              </span>
+        {events.map(event => {
+          const client = 'clients' in event ? event.clients : event.personal_clients;
+
+          return (
+            <div
+              key={event.id}
+              className="event-card group relative rounded px-2 py-1 text-xs font-medium text-white shadow-sm hover:shadow-md transition-all cursor-default"
+              style={{
+                backgroundColor: getEventColor(client.color, event.event_type),
+                borderLeft: `3px solid ${getEventBorderColor(client.color, event.event_type)}`,
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between gap-1">
+                <span className="truncate flex-1">
+                  {event.title || client.name}
+                </span>
               <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={(e) => {
@@ -97,11 +102,13 @@ export default function CalendarDay({
                 </button>
               </div>
             </div>
-            <div className="text-[10px] opacity-90 mt-0.5 capitalize">
-              {event.event_type}
+              <div className="text-[10px] opacity-90 mt-0.5 flex items-center justify-between">
+                <span className="capitalize">{event.event_type}</span>
+                <span className="font-semibold">{event.duration_hours}h</span>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

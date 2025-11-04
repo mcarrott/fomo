@@ -1,14 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
 import { getMonthDays, isSameDay, formatDate, parseDate, isDateInRange } from '../utils/dateUtils';
-import { EventWithClient } from '../lib/supabase';
+import { EventWithClient, PersonalEventWithClient } from '../lib/supabase';
 import CalendarDay from './CalendarDay';
+
+type CalendarEvent = EventWithClient | PersonalEventWithClient;
 
 interface CalendarGridProps {
   currentDate: Date;
-  events: EventWithClient[];
+  events: CalendarEvent[];
   onDragComplete: (dates: Date[]) => void;
   onEventDelete: (eventId: string) => void;
-  onEventEdit: (event: EventWithClient) => void;
+  onEventEdit: (event: CalendarEvent) => void;
 }
 
 export default function CalendarGrid({ currentDate, events, onDragComplete, onEventDelete, onEventEdit }: CalendarGridProps) {
