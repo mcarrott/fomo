@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 interface FinancialDocumentUploadProps {
   onClose: () => void;
   onUploadComplete: () => void;
+  isProfessional?: boolean;
 }
 
 const DOCUMENT_TYPES = [
@@ -15,7 +16,7 @@ const DOCUMENT_TYPES = [
   { value: 'other', label: 'Other' },
 ];
 
-export default function FinancialDocumentUpload({ onClose, onUploadComplete }: FinancialDocumentUploadProps) {
+export default function FinancialDocumentUpload({ onClose, onUploadComplete, isProfessional = true }: FinancialDocumentUploadProps) {
   const [name, setName] = useState('');
   const [documentType, setDocumentType] = useState('receipt');
   const [year, setYear] = useState(new Date().getFullYear().toString());
@@ -43,21 +44,29 @@ export default function FinancialDocumentUpload({ onClose, onUploadComplete }: F
 
     try {
       const fileUrl = URL.createObjectURL(file);
+      const tableName = isProfessional ? 'financial_documents' : 'personal_financial_documents';
+
+      const insertData: any = {
+        name: name.trim(),
+        document_type: documentType,
+        year: year ? parseInt(year) : null,
+        amount: amount ? parseFloat(amount) : null,
+        file_url: fileUrl,
+        file_name: file.name,
+        file_size: file.size,
+        file_type: file.type,
+        notes: notes.trim() || null,
+      };
+
+      if (!isProfessional) {
+        insertData.user_id = user?.id;
+      } else {
+        insertData.user_id = user?.id;
+      }
 
       const { error: dbError } = await supabase
-        .from('financial_documents')
-        .insert({
-          name: name.trim(),
-          document_type: documentType,
-          year: year ? parseInt(year) : null,
-          amount: amount ? parseFloat(amount) : null,
-          file_url: fileUrl,
-          file_name: file.name,
-          file_size: file.size,
-          file_type: file.type,
-          notes: notes.trim() || null,
-          user_id: user?.id,
-        });
+        .from(tableName)
+        .insert(insertData);
 
       if (dbError) {
         console.error('Error saving document:', dbError);

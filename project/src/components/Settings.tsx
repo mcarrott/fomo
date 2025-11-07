@@ -11,6 +11,7 @@ interface UserSettings {
   font_family: string;
   theme: string;
   default_event_hours: number;
+  news_api_key: string | null;
 }
 
 const NEWS_CATEGORIES = [
@@ -38,6 +39,8 @@ export default function Settings() {
   const [fontFamily, setFontFamily] = useState('inter');
   const [theme, setTheme] = useState('light');
   const [defaultEventHours, setDefaultEventHours] = useState(8);
+  const [newsApiKey, setNewsApiKey] = useState('');
+  const [showApiKey, setShowApiKey] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -79,6 +82,7 @@ export default function Settings() {
       setFontFamily(data.font_family || 'inter');
       setTheme(data.theme || 'light');
       setDefaultEventHours(data.default_event_hours || 8);
+      setNewsApiKey(data.news_api_key || '');
       applyTheme(data.theme || 'light');
     } else {
       await createDefaultSettings();
@@ -112,6 +116,7 @@ export default function Settings() {
       setFontFamily(data.font_family || 'inter');
       setTheme(data.theme || 'light');
       setDefaultEventHours(data.default_event_hours || 8);
+      setNewsApiKey(data.news_api_key || '');
       applyTheme(data.theme || 'light');
     }
   }
@@ -137,6 +142,7 @@ export default function Settings() {
       news_category: newsCategory,
       font_family: fontFamily,
       theme: theme,
+      news_api_key: newsApiKey.trim() || null,
       updated_at: new Date().toISOString(),
     };
 
@@ -304,24 +310,59 @@ export default function Settings() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  News Category
-                </label>
-                <select
-                  value={newsCategory}
-                  onChange={(e) => setNewsCategory(e.target.value)}
-                  className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
-                >
-                  {NEWS_CATEGORIES.map(category => (
-                    <option key={category.value} value={category.value}>
-                      {category.label}
-                    </option>
-                  ))}
-                </select>
-                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                  Your news feed will show articles from this category
-                </p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    News Category
+                  </label>
+                  <select
+                    value={newsCategory}
+                    onChange={(e) => setNewsCategory(e.target.value)}
+                    className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                  >
+                    {NEWS_CATEGORIES.map(category => (
+                      <option key={category.value} value={category.value}>
+                        {category.label}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                    Your news feed will show articles from this category
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    NewsAPI Key
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showApiKey ? 'text' : 'password'}
+                      value={newsApiKey}
+                      onChange={(e) => setNewsApiKey(e.target.value)}
+                      placeholder="Enter your NewsAPI key"
+                      className="w-full px-4 py-3 pr-12 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowApiKey(!showApiKey)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                    >
+                      {showApiKey ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                    Get your free API key at{' '}
+                    <a
+                      href="https://newsapi.org/register"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      newsapi.org/register
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
 

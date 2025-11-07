@@ -9,10 +9,11 @@ import ClientManagement from './components/ClientManagement';
 import Documents from './components/Documents';
 import Finances from './components/Finances';
 import Settings from './components/Settings';
+import Brainstorm from './components/Brainstorm';
 import Navigation from './components/Navigation';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'calendar' | 'tasks' | 'timesheet' | 'clients' | 'documents' | 'finances' | 'settings'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'calendar' | 'tasks' | 'timesheet' | 'clients' | 'documents' | 'finances' | 'settings' | 'brainstorm'>('home');
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -41,6 +42,7 @@ export default function App() {
         {currentView === 'clients' && <ClientManagement />}
         {currentView === 'documents' && <Documents />}
         {currentView === 'finances' && <Finances />}
+        {currentView === 'brainstorm' && <Brainstorm />}
         {currentView === 'settings' && <Settings />}
       </main>
     </div>

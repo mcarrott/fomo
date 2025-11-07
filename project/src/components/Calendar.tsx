@@ -131,10 +131,13 @@ export default function Calendar() {
   };
 
   const handleEventCreate = async (eventData: {
-    clientId: string;
+    clientId: string | null;
     title: string;
-    eventType: 'hold' | 'book' | 'paid';
+    eventType: string;
     durationHours: number;
+    details?: string;
+    startTime?: string;
+    endTime?: string;
   }) => {
     if (selectedDates.length === 0) return;
 
@@ -153,6 +156,9 @@ export default function Calendar() {
             end_date: endDate,
             event_type: eventData.eventType,
             duration_hours: eventData.durationHours,
+            details: eventData.details || null,
+            start_time: eventData.startTime || null,
+            end_time: eventData.endTime || null,
             updated_at: new Date().toISOString(),
           })
           .eq('id', editingEvent.id);
@@ -175,6 +181,9 @@ export default function Calendar() {
             end_date: endDate,
             event_type: eventData.eventType,
             duration_hours: eventData.durationHours,
+            details: eventData.details || null,
+            start_time: eventData.startTime || null,
+            end_time: eventData.endTime || null,
             user_id: user?.id,
           });
 
@@ -197,6 +206,9 @@ export default function Calendar() {
             end_date: endDate,
             event_type: eventData.eventType,
             duration_hours: eventData.durationHours,
+            details: eventData.details || null,
+            start_time: eventData.startTime || null,
+            end_time: eventData.endTime || null,
             updated_at: new Date().toISOString(),
           })
           .eq('id', editingEvent.id);
@@ -219,6 +231,9 @@ export default function Calendar() {
             end_date: endDate,
             event_type: eventData.eventType,
             duration_hours: eventData.durationHours,
+            details: eventData.details || null,
+            start_time: eventData.startTime || null,
+            end_time: eventData.endTime || null,
             user_id: user?.id,
           });
 
@@ -253,6 +268,17 @@ export default function Calendar() {
 
   const handleEventEdit = (event: EventWithClient | PersonalEventWithClient) => {
     setEditingEvent(event);
+    const startDate = new Date(event.start_date + 'T00:00:00');
+    const endDate = new Date(event.end_date + 'T00:00:00');
+    const dates: Date[] = [];
+    const current = new Date(startDate);
+
+    while (current <= endDate) {
+      dates.push(new Date(current));
+      current.setDate(current.getDate() + 1);
+    }
+
+    setSelectedDates(dates);
     setIsModalOpen(true);
   };
 
@@ -376,6 +402,7 @@ export default function Calendar() {
           selectedDates={selectedDates}
           editingEvent={editingEvent as any}
           defaultHours={defaultEventHours}
+          isPersonal={calendarView === 'personal'}
           onClose={() => {
             setIsModalOpen(false);
             setSelectedDates([]);

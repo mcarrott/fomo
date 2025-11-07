@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Home as HomeIcon, Calendar as CalendarIcon, ListTodo, Clock, Users, FileText, Wallet, Settings as SettingsIcon, LogOut, Menu, X } from 'lucide-react';
+import { Home as HomeIcon, Calendar as CalendarIcon, ListTodo, Clock, Users, FileText, Wallet, Settings as SettingsIcon, LogOut, Menu, X, Lightbulb } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface NavigationProps {
-  currentView: 'home' | 'calendar' | 'tasks' | 'timesheet' | 'clients' | 'documents' | 'finances' | 'settings';
-  onViewChange: (view: 'home' | 'calendar' | 'tasks' | 'timesheet' | 'clients' | 'documents' | 'finances' | 'settings') => void;
+  currentView: 'home' | 'calendar' | 'tasks' | 'timesheet' | 'clients' | 'documents' | 'finances' | 'settings' | 'brainstorm';
+  onViewChange: (view: 'home' | 'calendar' | 'tasks' | 'timesheet' | 'clients' | 'documents' | 'finances' | 'settings' | 'brainstorm') => void;
 }
 
 export default function Navigation({ currentView, onViewChange }: NavigationProps) {
@@ -19,6 +19,7 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
     { id: 'clients' as const, icon: Users, label: 'Clients' },
     { id: 'documents' as const, icon: FileText, label: 'Documents' },
     { id: 'finances' as const, icon: Wallet, label: 'Finances' },
+    { id: 'brainstorm' as const, icon: Lightbulb, label: 'Brainstorm' },
     { id: 'settings' as const, icon: SettingsIcon, label: 'Settings' },
   ];
 

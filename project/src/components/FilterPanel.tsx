@@ -25,7 +25,7 @@ export default function FilterPanel({
 }: FilterPanelProps) {
 
   const getStatsByType = () => {
-    const stats = {
+    const stats: Record<string, { days: number; hours: number }> = {
       hold: { days: 0, hours: 0 },
       book: { days: 0, hours: 0 },
       paid: { days: 0, hours: 0 },
@@ -38,6 +38,10 @@ export default function FilterPanel({
       const days = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
       const hours = days * (event.duration_hours || 0);
 
+      if (!stats[event.event_type]) {
+        stats[event.event_type] = { days: 0, hours: 0 };
+      }
+
       stats[event.event_type].days += days;
       stats[event.event_type].hours += hours;
       stats.total.days += days;
@@ -48,12 +52,7 @@ export default function FilterPanel({
   };
 
   const getStatsByClient = () => {
-    const statsMap = new Map<string, {
-      hold: { days: number; hours: number };
-      book: { days: number; hours: number };
-      paid: { days: number; hours: number };
-      total: { days: number; hours: number }
-    }>();
+    const statsMap = new Map<string, Record<string, { days: number; hours: number }>>();
 
     clients.forEach(client => {
       statsMap.set(client.id, {
@@ -66,18 +65,32 @@ export default function FilterPanel({
 
     events.forEach(event => {
       const clientId = 'client_id' in event ? event.client_id : event.personal_client_id;
-      const stats = statsMap.get(clientId);
-      if (stats) {
-        const startDate = parseDate(event.start_date);
-        const endDate = parseDate(event.end_date);
-        const days = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-        const hours = days * (event.duration_hours || 0);
+      if (!clientId) return;
 
-        stats[event.event_type].days += days;
-        stats[event.event_type].hours += hours;
-        stats.total.days += days;
-        stats.total.hours += hours;
+      let stats = statsMap.get(clientId);
+      if (!stats) {
+        stats = {
+          hold: { days: 0, hours: 0 },
+          book: { days: 0, hours: 0 },
+          paid: { days: 0, hours: 0 },
+          total: { days: 0, hours: 0 }
+        };
+        statsMap.set(clientId, stats);
       }
+
+      const startDate = parseDate(event.start_date);
+      const endDate = parseDate(event.end_date);
+      const days = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      const hours = days * (event.duration_hours || 0);
+
+      if (!stats[event.event_type]) {
+        stats[event.event_type] = { days: 0, hours: 0 };
+      }
+
+      stats[event.event_type].days += days;
+      stats[event.event_type].hours += hours;
+      stats.total.days += days;
+      stats.total.hours += hours;
     });
 
     return statsMap;

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Plus, Calendar as CalendarIcon, Check, X, Edit2, Trash2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import NewsFeed from './NewsFeed';
 
 interface UserSettings {
   id: string;
@@ -25,19 +26,11 @@ interface PostItNote {
   position: number;
 }
 
-interface NewsArticle {
-  title: string;
-  description: string;
-  url: string;
-  source: string;
-  publishedAt: string;
-}
 
 export default function Home() {
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [postItNotes, setPostItNotes] = useState<PostItNote[]>([]);
-  const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
   const [isAddingReminder, setIsAddingReminder] = useState(false);
   const [newReminderTitle, setNewReminderTitle] = useState('');
   const [newReminderDate, setNewReminderDate] = useState('');
@@ -53,11 +46,6 @@ export default function Home() {
     }
   }, [user]);
 
-  useEffect(() => {
-    if (settings) {
-      fetchNews(settings.news_category);
-    }
-  }, [settings]);
 
   async function fetchSettings() {
     if (!user) return;
@@ -89,6 +77,7 @@ export default function Home() {
         news_category: 'general',
         font_family: 'inter',
         theme: 'light',
+        default_event_hours: 8,
       })
       .select()
       .single();
@@ -154,32 +143,6 @@ export default function Home() {
     }
   }
 
-  async function fetchNews(category: string) {
-    const mockNews: NewsArticle[] = [
-      {
-        title: `Latest in ${category.charAt(0).toUpperCase() + category.slice(1)}`,
-        description: 'Stay updated with the latest news and developments in your selected category.',
-        url: '#',
-        source: 'News Source',
-        publishedAt: new Date().toISOString(),
-      },
-      {
-        title: 'Breaking News Update',
-        description: 'Important updates and stories that matter to you.',
-        url: '#',
-        source: 'Daily News',
-        publishedAt: new Date().toISOString(),
-      },
-      {
-        title: 'Industry Insights',
-        description: 'Expert analysis and commentary on current events.',
-        url: '#',
-        source: 'Industry Times',
-        publishedAt: new Date().toISOString(),
-      },
-    ];
-    setNewsArticles(mockNews);
-  }
 
   const handleAddReminder = async () => {
     if (!newReminderTitle.trim() || !newReminderDate) return;
@@ -448,49 +411,7 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6">
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">News Feed</h2>
-
-            {newsArticles.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-slate-500 dark:text-slate-400">Loading news...</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {newsArticles.map((article, index) => (
-                  <div
-                    key={index}
-                    className="p-5 border-2 border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md transition-all"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-bold text-lg text-slate-800 dark:text-slate-100 flex-1">
-                        {article.title}
-                      </h3>
-                      <span className="text-xs text-slate-500 dark:text-slate-400 ml-4">{article.source}</span>
-                    </div>
-                    <p className="text-slate-600 dark:text-slate-300 mb-3">{article.description}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
-                        {new Date(article.publishedAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                      </span>
-                      <a
-                        href={article.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-                      >
-                        Read more →
-                      </a>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <NewsFeed />
         </div>
       </div>
     </div>

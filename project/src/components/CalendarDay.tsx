@@ -64,20 +64,22 @@ export default function CalendarDay({
       <div className="space-y-1">
         {events.map(event => {
           const client = 'clients' in event ? event.clients : event.personal_clients;
+          const clientColor = client?.color || '#94a3b8';
+          const displayName = event.title || client?.name || 'Untitled';
 
           return (
             <div
               key={event.id}
               className="event-card group relative rounded px-2 py-1 text-xs font-medium text-white shadow-sm hover:shadow-md transition-all cursor-default"
               style={{
-                backgroundColor: getEventColor(client.color, event.event_type),
-                borderLeft: `3px solid ${getEventBorderColor(client.color, event.event_type)}`,
+                backgroundColor: getEventColor(clientColor, event.event_type),
+                borderLeft: `3px solid ${getEventBorderColor(clientColor, event.event_type)}`,
               }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between gap-1">
                 <span className="truncate flex-1">
-                  {event.title || client.name}
+                  {displayName}
                 </span>
               <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button

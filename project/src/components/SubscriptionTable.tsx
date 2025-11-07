@@ -17,12 +17,13 @@ interface Subscription {
 interface SubscriptionTableProps {
   subscriptions: Subscription[];
   onRefresh: () => void;
+  isProfessional?: boolean;
 }
 
 type SortField = 'is_active' | 'name' | 'purpose' | 'login_email' | 'cost' | 'billing_cycle' | 'notes';
 type SortDirection = 'asc' | 'desc' | null;
 
-export default function SubscriptionTable({ subscriptions, onRefresh }: SubscriptionTableProps) {
+export default function SubscriptionTable({ subscriptions, onRefresh, isProfessional = true }: SubscriptionTableProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingData, setEditingData] = useState<Partial<Subscription>>({});
   const [showPasswords, setShowPasswords] = useState<{ [key: string]: boolean }>({});
@@ -37,8 +38,10 @@ export default function SubscriptionTable({ subscriptions, onRefresh }: Subscrip
   const handleSave = async () => {
     if (!editingId) return;
 
+    const tableName = isProfessional ? 'subscriptions' : 'personal_subscriptions';
+
     const { error } = await supabase
-      .from('subscriptions')
+      .from(tableName)
       .update({
         name: editingData.name,
         purpose: editingData.purpose || null,
@@ -71,8 +74,10 @@ export default function SubscriptionTable({ subscriptions, onRefresh }: Subscrip
       return;
     }
 
+    const tableName = isProfessional ? 'subscriptions' : 'personal_subscriptions';
+
     const { error } = await supabase
-      .from('subscriptions')
+      .from(tableName)
       .delete()
       .eq('id', id);
 
