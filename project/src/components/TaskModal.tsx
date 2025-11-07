@@ -23,7 +23,7 @@ export default function TaskModal({ clients, editingTask, onClose, onSubmit }: T
   const [title, setTitle] = useState(editingTask?.title || '');
   const [description, setDescription] = useState(editingTask?.description || '');
   const [priority, setPriority] = useState<'low' | 'med' | 'high'>(editingTask?.priority || 'med');
-  const [dueDate, setDueDate] = useState(editingTask?.due_date || '');
+  const [dueDate, setDueDate] = useState(editingTask?.due_date || today);
   const [showDueDatePicker, setShowDueDatePicker] = useState(!!editingTask?.due_date);
 
   useEffect(() => {
@@ -46,12 +46,14 @@ export default function TaskModal({ clients, editingTask, onClose, onSubmit }: T
     e.preventDefault();
     if (!title.trim()) return;
 
+    const finalDueDate = dueDate || today;
+
     onSubmit({
       clientId: clientId || null,
       title: title.trim(),
       description: description.trim(),
       priority,
-      dueDate,
+      dueDate: finalDueDate,
     });
   };
 
@@ -156,54 +158,28 @@ export default function TaskModal({ clients, editingTask, onClose, onSubmit }: T
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Due Date (Optional)
+              Due Date
             </label>
-            {!showDueDatePicker ? (
+            <div className="space-y-2">
               <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowDueDatePicker(true)}
-                  className="flex-1 px-4 py-3 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors text-left"
-                >
-                  Set due date...
-                </button>
+                <input
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  className="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
                 <button
                   type="button"
                   onClick={handleEOD}
-                  className="px-4 py-3 border-2 border-blue-500 bg-blue-50 text-blue-700 rounded-lg font-medium hover:bg-blue-100 transition-colors"
+                  className="px-4 py-3 border-2 border-blue-500 bg-blue-50 text-blue-700 rounded-lg font-medium hover:bg-blue-100 transition-colors whitespace-nowrap"
                 >
                   EOD
                 </button>
               </div>
-            ) : (
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <input
-                    type="date"
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                    className="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleEOD}
-                    className="px-4 py-3 border-2 border-blue-500 bg-blue-50 text-blue-700 rounded-lg font-medium hover:bg-blue-100 transition-colors whitespace-nowrap"
-                  >
-                    EOD
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setDueDate('');
-                    setShowDueDatePicker(false);
-                  }}
-                  className="text-sm text-slate-600 hover:text-slate-800"
-                >
-                  Clear due date
-                </button>
-              </div>
-            )}
+              <p className="text-xs text-slate-500">
+                {dueDate === today ? 'Due today (EOD)' : dueDate ? `Due ${new Date(dueDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}` : 'Due today (default)'}
+              </p>
+            </div>
           </div>
 
           <div className="flex gap-3 pt-4">
@@ -216,7 +192,7 @@ export default function TaskModal({ clients, editingTask, onClose, onSubmit }: T
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3 text-white bg-blue-600 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
+              className="flex-1 px-4 py-3 text-white bg-blue-600 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
             >
               {editingTask ? 'Save Changes' : 'Create Task'}
             </button>

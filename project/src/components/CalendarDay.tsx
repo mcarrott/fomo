@@ -70,7 +70,7 @@ export default function CalendarDay({
           return (
             <div
               key={event.id}
-              className="event-card group relative rounded px-2 py-1 text-xs font-medium text-white shadow-sm hover:shadow-md transition-all cursor-default"
+              className="event-card group relative rounded px-2 py-1 text-xs font-medium text-white shadow-md hover:shadow-lg transition-all cursor-default"
               style={{
                 backgroundColor: getEventColor(clientColor, event.event_type),
                 borderLeft: `3px solid ${getEventBorderColor(clientColor, event.event_type)}`,

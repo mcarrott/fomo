@@ -149,8 +149,30 @@ export default function KanbanBoard() {
       console.error('Error updating task status:', error);
     } else {
       if (wasNotDone && isNowDone) {
-        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a4+yVZCgvVKXv8r5HG2SX5/PAGwUdSKbu8L8dCQlJqvH0xxQNDUqo8fTHFA0NSqfx9McCBwdJqO/0xwIHB0mo7/THAgcHSajv9McWDxE9iNA3FA0NNV9xcXlzaEceWJ/h7aSGQy1YfLCfKAMHLFSe8PGzQR1ektv0wx0HD0il7fC2HQYKQKPr8LNBG2OV4/PA');
-        audio.play().catch(e => console.log('Audio play failed:', e));
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+
+        const playNote = (frequency: number, startTime: number, duration: number, volume: number = 0.3) => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+
+          oscillator.frequency.setValueAtTime(frequency, startTime);
+          oscillator.type = 'sine';
+
+          gainNode.gain.setValueAtTime(0, startTime);
+          gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.01);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+
+          oscillator.start(startTime);
+          oscillator.stop(startTime + duration);
+        };
+
+        const now = audioContext.currentTime;
+        playNote(523.25, now, 0.15, 0.25);
+        playNote(659.25, now + 0.1, 0.15, 0.25);
+        playNote(783.99, now + 0.2, 0.3, 0.3);
       }
       await fetchTasks();
     }
@@ -238,7 +260,7 @@ export default function KanbanBoard() {
   const weekDays = getWeekDays();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen">
       <div className="p-4 md:p-8">
         <div className="max-w-[1600px] mx-auto">
           <div className="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -252,14 +274,14 @@ export default function KanbanBoard() {
                 setEditingTask(null);
                 setIsModalOpen(true);
               }}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-xl hover:shadow-2xl"
             >
               <Plus className="w-5 h-5" />
               New Task
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 mb-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 mb-6">
             <div className="flex items-center justify-between gap-6">
               <div className="flex items-center gap-3">
                 <div className="flex bg-slate-100 dark:bg-slate-700 rounded-lg p-1">
@@ -267,7 +289,7 @@ export default function KanbanBoard() {
                     onClick={() => setViewMode('today')}
                     className={`px-4 py-2 rounded-md font-medium transition-all ${
                       viewMode === 'today'
-                        ? 'bg-white text-slate-800 shadow-sm'
+                        ? 'bg-white text-slate-800 shadow-md'
                         : 'text-slate-600 hover:text-slate-800'
                     }`}
                   >
@@ -277,7 +299,7 @@ export default function KanbanBoard() {
                     onClick={() => setViewMode('week')}
                     className={`px-4 py-2 rounded-md font-medium transition-all ${
                       viewMode === 'week'
-                        ? 'bg-white text-slate-800 shadow-sm'
+                        ? 'bg-white text-slate-800 shadow-md'
                         : 'text-slate-600 hover:text-slate-800'
                     }`}
                   >

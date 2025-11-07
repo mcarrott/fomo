@@ -392,7 +392,7 @@ export default function EventModal({
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3 text-white bg-blue-600 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
+              className="flex-1 px-4 py-3 text-white bg-blue-600 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
             >
               {editingEvent ? 'Save Changes' : 'Create Event'}
             </button>

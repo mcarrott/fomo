@@ -195,7 +195,7 @@ export default function FilterPanel({
               return (
                 <div
                   key={client.id}
-                  className="bg-slate-50 rounded-lg p-4 space-y-2 border-l-4 transition-all hover:shadow-md"
+                  className="bg-slate-50 rounded-lg p-4 space-y-2 border-l-4 transition-all hover:shadow-lg"
                   style={{ borderColor: client.color }}
                 >
                   <div className="flex items-center justify-between mb-2">

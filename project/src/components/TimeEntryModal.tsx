@@ -350,7 +350,7 @@ export default function TimeEntryModal({ mode, clients, editingEntry, onClose, o
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-3 text-white bg-blue-600 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                className="flex-1 px-4 py-3 text-white bg-blue-600 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
               >
                 {mode === 'timer' ? (
                   <>

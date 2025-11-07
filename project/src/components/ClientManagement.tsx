@@ -110,7 +110,7 @@ export default function ClientManagement() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen">
       <div className="p-8">
         <div className="max-w-[1400px] mx-auto">
           <div className="mb-8 flex items-center justify-between">
@@ -124,14 +124,14 @@ export default function ClientManagement() {
                 setEditingClient(null);
                 setIsModalOpen(true);
               }}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-xl hover:shadow-2xl"
             >
               <Plus className="w-5 h-5" />
               New Client
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 mb-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 mb-6">
             <div className="mb-6">
               <input
                 type="text"

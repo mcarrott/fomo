@@ -58,7 +58,7 @@ export default function TaskCard({ task, onDragStart, onEdit, onDelete }: TaskCa
     <div
       draggable
       onDragStart={onDragStart}
-      className={`group border-2 rounded-lg p-4 hover:shadow-lg transition-all cursor-move ${
+      className={`group border-2 rounded-lg p-4 hover:shadow-xl transition-all cursor-move ${
         isDone
           ? 'bg-slate-100 border-slate-300 opacity-60'
           : 'bg-white border-slate-200 hover:border-slate-300'

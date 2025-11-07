@@ -305,7 +305,7 @@ export default function TimeSheet() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen">
       <div className="p-8">
         <div className="max-w-[1400px] mx-auto">
           <div className="mb-8">
@@ -313,7 +313,7 @@ export default function TimeSheet() {
             <p className="text-slate-600 dark:text-slate-300">Track your work hours by client and task</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 mb-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 mb-6">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <Clock className="w-8 h-8 text-blue-600" />
@@ -331,7 +331,7 @@ export default function TimeSheet() {
                 {activeTimer ? (
                   <button
                     onClick={handleStopTimer}
-                    className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors shadow-lg hover:shadow-xl"
+                    className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors shadow-xl hover:shadow-2xl"
                   >
                     <Pause className="w-5 h-5" />
                     Stop Timer
@@ -344,7 +344,7 @@ export default function TimeSheet() {
                         setEditingEntry(null);
                         setIsModalOpen(true);
                       }}
-                      className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+                      className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-xl hover:shadow-2xl"
                     >
                       <Play className="w-5 h-5" />
                       Start Timer
@@ -355,7 +355,7 @@ export default function TimeSheet() {
                         setEditingEntry(null);
                         setIsModalOpen(true);
                       }}
-                      className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl"
+                      className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors shadow-xl hover:shadow-2xl"
                     >
                       <Plus className="w-5 h-5" />
                       Add Entry
@@ -386,7 +386,7 @@ export default function TimeSheet() {
             )}
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 mb-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">Time Entries</h3>

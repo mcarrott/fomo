@@ -166,11 +166,11 @@ export default function Brainstorm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4 md:p-8">
+    <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl shadow-lg">
+            <div className="p-3 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl shadow-xl">
               <Lightbulb className="w-8 h-8 text-white" />
             </div>
             <div>
@@ -180,7 +180,7 @@ export default function Brainstorm() {
           </div>
           <button
             onClick={handleCreateCard}
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors shadow-xl hover:shadow-2xl"
           >
             <Plus className="w-5 h-5" />
             New Card
@@ -188,7 +188,7 @@ export default function Brainstorm() {
         </div>
 
         {cards.length === 0 ? (
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-12 text-center">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-12 text-center">
             <div className="max-w-md mx-auto">
               <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Lightbulb className="w-8 h-8 text-slate-400" />
@@ -214,7 +214,7 @@ export default function Brainstorm() {
               <div
                 key={card.id}
                 onClick={() => handleCardClick(card)}
-                className="group bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all cursor-pointer overflow-hidden border-2 border-transparent hover:border-blue-400"
+                className="group bg-white dark:bg-slate-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all cursor-pointer overflow-hidden border-2 border-transparent hover:border-blue-400"
                 style={{ borderTopColor: card.color, borderTopWidth: '4px' }}
               >
                 <div className="p-6">
