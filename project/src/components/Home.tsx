@@ -231,7 +231,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen">
       <div className="p-4 md:p-8">
         <div className="max-w-[1400px] mx-auto">
           <div className="mb-8">
@@ -241,7 +241,7 @@ export default function Home() {
             <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300">{settings?.welcome_message || 'Welcome back!'}</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 mb-8">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
                 <CalendarIcon className="w-6 h-6 text-blue-600" />
@@ -249,7 +249,7 @@ export default function Home() {
               </div>
               <button
                 onClick={() => setIsAddingReminder(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
               >
                 <Plus className="w-4 h-4" />
                 Add Reminder
@@ -369,7 +369,7 @@ export default function Home() {
                 className="relative group"
                 style={{
                   background: note.color,
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
                 }}
               >
                 <div className="p-6 min-h-[250px] rounded-lg">
@@ -401,7 +401,7 @@ export default function Home() {
                 {!editingNoteId && (
                   <button
                     onClick={() => setEditingNoteId(note.id)}
-                    className="absolute top-2 right-2 p-2 bg-white/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/80"
+                    className="absolute top-2 right-2 p-2 bg-white/50 backdrop-blur-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/80 backdrop-blur-sm"
                     aria-label="Edit"
                   >
                     <Edit2 className="w-4 h-4 text-slate-600" />

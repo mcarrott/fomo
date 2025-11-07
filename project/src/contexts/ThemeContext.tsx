@@ -4,12 +4,19 @@ import { supabase } from '../lib/supabase';
 interface ThemeContextType {
   theme: string;
   setTheme: (theme: string) => void;
+  gradientColor1: string;
+  gradientColor2: string;
+  gradientAngle: number;
+  setGradient: (color1: string, color2: string, angle: number) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState('light');
+  const [gradientColor1, setGradientColor1] = useState('#f5f5f4');
+  const [gradientColor2, setGradientColor2] = useState('#fafaf9');
+  const [gradientAngle, setGradientAngle] = useState(135);
 
   useEffect(() => {
     loadTheme();
@@ -18,7 +25,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const loadTheme = async () => {
     const { data } = await supabase
       .from('user_settings')
-      .select('theme')
+      .select('theme, gradient_color_1, gradient_color_2, gradient_angle')
       .limit(1)
       .maybeSingle();
 
@@ -26,6 +33,22 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       setThemeState(data.theme);
       applyTheme(data.theme);
     }
+
+    if (data?.gradient_color_1) {
+      setGradientColor1(data.gradient_color_1);
+    }
+    if (data?.gradient_color_2) {
+      setGradientColor2(data.gradient_color_2);
+    }
+    if (data?.gradient_angle !== null && data?.gradient_angle !== undefined) {
+      setGradientAngle(data.gradient_angle);
+    }
+
+    applyGradient(
+      data?.gradient_color_1 || '#f5f5f4',
+      data?.gradient_color_2 || '#fafaf9',
+      data?.gradient_angle ?? 135
+    );
   };
 
   const applyTheme = (selectedTheme: string) => {
@@ -36,13 +59,26 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const applyGradient = (color1: string, color2: string, angle: number) => {
+    document.documentElement.style.setProperty('--gradient-color-1', color1);
+    document.documentElement.style.setProperty('--gradient-color-2', color2);
+    document.documentElement.style.setProperty('--gradient-angle', `${angle}deg`);
+  };
+
   const setTheme = (newTheme: string) => {
     setThemeState(newTheme);
     applyTheme(newTheme);
   };
 
+  const setGradient = (color1: string, color2: string, angle: number) => {
+    setGradientColor1(color1);
+    setGradientColor2(color2);
+    setGradientAngle(angle);
+    applyGradient(color1, color2, angle);
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, gradientColor1, gradientColor2, gradientAngle, setGradient }}>
       {children}
     </ThemeContext.Provider>
   );

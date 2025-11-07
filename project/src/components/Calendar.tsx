@@ -305,11 +305,11 @@ export default function Calendar() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen">
       <div className="flex h-screen">
         <div className="flex-1 p-4 md:p-8 overflow-auto">
           <div className="max-w-[1400px] mx-auto">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-4 md:p-8">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-4 md:p-8">
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
                 <div className="flex items-center gap-4 flex-wrap">
                   <h1 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100">Calendar</h1>
@@ -319,7 +319,7 @@ export default function Calendar() {
                       onClick={() => setCalendarView('work')}
                       className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                         calendarView === 'work'
-                          ? 'bg-white dark:bg-slate-600 text-blue-600 dark:text-blue-400 shadow-sm'
+                          ? 'bg-white dark:bg-slate-600 text-blue-600 dark:text-blue-400 shadow-md'
                           : 'text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100'
                       }`}
                     >
@@ -330,7 +330,7 @@ export default function Calendar() {
                       onClick={() => setCalendarView('personal')}
                       className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                         calendarView === 'personal'
-                          ? 'bg-white dark:bg-slate-600 text-green-600 dark:text-green-400 shadow-sm'
+                          ? 'bg-white dark:bg-slate-600 text-green-600 dark:text-green-400 shadow-md'
                           : 'text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100'
                       }`}
                     >

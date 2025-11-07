@@ -181,7 +181,7 @@ export default function Finances() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen">
       <div className="p-8">
         <div className="max-w-[1600px] mx-auto">
           <div className="mb-8 flex items-center justify-between">
@@ -195,7 +195,7 @@ export default function Finances() {
                 onClick={() => setFinanceView('professional')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                   financeView === 'professional'
-                    ? 'bg-white dark:bg-slate-600 text-blue-600 dark:text-blue-400 shadow-sm'
+                    ? 'bg-white dark:bg-slate-600 text-blue-600 dark:text-blue-400 shadow-md'
                     : 'text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100'
                 }`}
               >
@@ -206,7 +206,7 @@ export default function Finances() {
                 onClick={() => setFinanceView('personal')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                   financeView === 'personal'
-                    ? 'bg-white dark:bg-slate-600 text-green-600 dark:text-green-400 shadow-sm'
+                    ? 'bg-white dark:bg-slate-600 text-green-600 dark:text-green-400 shadow-md'
                     : 'text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100'
                 }`}
               >
@@ -217,7 +217,7 @@ export default function Finances() {
                 onClick={() => setFinanceView('all')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                   financeView === 'all'
-                    ? 'bg-white dark:bg-slate-600 text-purple-600 dark:text-purple-400 shadow-sm'
+                    ? 'bg-white dark:bg-slate-600 text-purple-600 dark:text-purple-400 shadow-md'
                     : 'text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100'
                 }`}
               >
@@ -228,7 +228,7 @@ export default function Finances() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-slate-600 dark:text-slate-300">Monthly Expenses</span>
                 <DollarSign className="w-5 h-5 text-green-600" />
@@ -241,7 +241,7 @@ export default function Finances() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-slate-600 dark:text-slate-300">Yearly Expenses</span>
                 <DollarSign className="w-5 h-5 text-blue-600" />
@@ -254,7 +254,7 @@ export default function Finances() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-slate-600 dark:text-slate-300">Total Documents</span>
                 <FileText className="w-5 h-5 text-purple-600" />
@@ -268,7 +268,7 @@ export default function Finances() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">Subscriptions</h2>
@@ -276,7 +276,7 @@ export default function Finances() {
               </div>
               <button
                 onClick={handleAddSubscription}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
               >
                 <Plus className="w-4 h-4" />
                 Add Subscription
@@ -290,7 +290,7 @@ export default function Finances() {
             />
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">Financial Documents</h2>
@@ -298,7 +298,7 @@ export default function Finances() {
               </div>
               <button
                 onClick={() => setIsUploadModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
               >
                 <Upload className="w-4 h-4" />
                 Upload Document
@@ -330,7 +330,7 @@ export default function Finances() {
                 {filteredDocuments.map(doc => (
                   <div
                     key={doc.id}
-                    className="border-2 border-slate-200 dark:border-slate-600 rounded-xl p-4 hover:shadow-lg transition-all hover:border-slate-300 dark:hover:border-slate-500"
+                    className="border-2 border-slate-200 dark:border-slate-600 rounded-xl p-4 hover:shadow-xl transition-all hover:border-slate-300 dark:hover:border-slate-500"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1 min-w-0">

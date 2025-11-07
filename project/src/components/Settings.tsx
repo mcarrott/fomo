@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Save, User, MessageSquare, Newspaper, Type, Lock, AlertTriangle, Eye, EyeOff, Moon, Sun, Clock } from 'lucide-react';
+import { Save, User, MessageSquare, Newspaper, Type, Lock, AlertTriangle, Eye, EyeOff, Moon, Sun, Clock, Palette } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface UserSettings {
   id: string;
@@ -12,6 +13,9 @@ interface UserSettings {
   theme: string;
   default_event_hours: number;
   news_api_key: string | null;
+  gradient_color_1: string;
+  gradient_color_2: string;
+  gradient_angle: number;
 }
 
 const NEWS_CATEGORIES = [
@@ -41,8 +45,13 @@ export default function Settings() {
   const [defaultEventHours, setDefaultEventHours] = useState(8);
   const [newsApiKey, setNewsApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
+  const [gradientColor1, setGradientColor1] = useState('#f5f5f4');
+  const [gradientColor2, setGradientColor2] = useState('#fafaf9');
+  const [gradientAngle, setGradientAngle] = useState(135);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  const { setGradient } = useTheme();
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -83,6 +92,9 @@ export default function Settings() {
       setTheme(data.theme || 'light');
       setDefaultEventHours(data.default_event_hours || 8);
       setNewsApiKey(data.news_api_key || '');
+      setGradientColor1(data.gradient_color_1 || '#f5f5f4');
+      setGradientColor2(data.gradient_color_2 || '#fafaf9');
+      setGradientAngle(data.gradient_angle ?? 135);
       applyTheme(data.theme || 'light');
     } else {
       await createDefaultSettings();
@@ -102,6 +114,9 @@ export default function Settings() {
         font_family: 'inter',
         theme: 'light',
         default_event_hours: 8,
+        gradient_color_1: '#f5f5f4',
+        gradient_color_2: '#fafaf9',
+        gradient_angle: 135,
       })
       .select()
       .single();
@@ -117,6 +132,9 @@ export default function Settings() {
       setTheme(data.theme || 'light');
       setDefaultEventHours(data.default_event_hours || 8);
       setNewsApiKey(data.news_api_key || '');
+      setGradientColor1(data.gradient_color_1 || '#f5f5f4');
+      setGradientColor2(data.gradient_color_2 || '#fafaf9');
+      setGradientAngle(data.gradient_angle ?? 135);
       applyTheme(data.theme || 'light');
     }
   }
@@ -143,6 +161,9 @@ export default function Settings() {
       font_family: fontFamily,
       theme: theme,
       news_api_key: newsApiKey.trim() || null,
+      gradient_color_1: gradientColor1,
+      gradient_color_2: gradientColor2,
+      gradient_angle: gradientAngle,
       updated_at: new Date().toISOString(),
     };
 
@@ -166,6 +187,7 @@ export default function Settings() {
 
       document.body.className = getFontClass(fontFamily);
       applyTheme(theme);
+      setGradient(gradientColor1, gradientColor2, gradientAngle);
 
       setTimeout(() => setSaveSuccess(false), 3000);
     }
@@ -234,7 +256,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen">
       <div className="p-8">
         <div className="max-w-3xl mx-auto">
           <div className="mb-8">
@@ -242,7 +264,7 @@ export default function Settings() {
             <p className="text-slate-600 dark:text-slate-400">Customize your dashboard experience</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 space-y-8">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 space-y-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 bg-blue-100 rounded-lg">
@@ -463,6 +485,101 @@ export default function Settings() {
               </div>
             </div>
 
+            <div className="border-t border-slate-200 pt-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-pink-100 rounded-lg">
+                  <Palette className="w-5 h-5 text-pink-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Background Gradient</h2>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">Customize your background colors</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      First Color
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="color"
+                        value={gradientColor1}
+                        onChange={(e) => setGradientColor1(e.target.value)}
+                        className="w-16 h-12 rounded-lg border border-slate-300 dark:border-slate-600 cursor-pointer"
+                      />
+                      <input
+                        type="text"
+                        value={gradientColor1}
+                        onChange={(e) => setGradientColor1(e.target.value)}
+                        placeholder="#f5f5f4"
+                        className="flex-1 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 font-mono text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      Second Color
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="color"
+                        value={gradientColor2}
+                        onChange={(e) => setGradientColor2(e.target.value)}
+                        className="w-16 h-12 rounded-lg border border-slate-300 dark:border-slate-600 cursor-pointer"
+                      />
+                      <input
+                        type="text"
+                        value={gradientColor2}
+                        onChange={(e) => setGradientColor2(e.target.value)}
+                        placeholder="#fafaf9"
+                        className="flex-1 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 font-mono text-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Gradient Angle: {gradientAngle}°
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="360"
+                    value={gradientAngle}
+                    onChange={(e) => setGradientAngle(parseInt(e.target.value))}
+                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
+                  <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <span>0° (→)</span>
+                    <span>90° (↑)</span>
+                    <span>180° (←)</span>
+                    <span>270° (↓)</span>
+                    <span>360° (→)</span>
+                  </div>
+                </div>
+
+                <div className="bg-slate-100 dark:bg-slate-700 rounded-lg p-4 border-2 border-slate-300 dark:border-slate-600">
+                  <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">Preview</p>
+                  <div
+                    className="w-full h-24 rounded-lg shadow-inner"
+                    style={{
+                      background: `linear-gradient(${gradientAngle}deg, ${gradientColor1}, ${gradientColor2})`
+                    }}
+                  />
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <p className="text-xs text-blue-800">
+                    <strong>Tip:</strong> Choose subtle, light colors for best readability. The gradient will be visible across your entire dashboard background.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="border-t border-slate-200 pt-8 flex items-center justify-between">
               <div>
                 {saveSuccess && (
@@ -475,7 +592,7 @@ export default function Settings() {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Save className="w-5 h-5" />
                 {isSaving ? 'Saving...' : 'Save Settings'}
@@ -503,7 +620,7 @@ export default function Settings() {
             </div>
           </div>
 
-          <div className="mt-6 bg-white rounded-2xl shadow-xl p-8 space-y-8">
+          <div className="mt-6 bg-white rounded-2xl shadow-2xl p-8 space-y-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 bg-yellow-100 rounded-lg">
@@ -606,7 +723,7 @@ export default function Settings() {
                   <button
                     onClick={handleChangePassword}
                     disabled={isChangingPassword}
-                    className="flex items-center gap-2 px-6 py-3 bg-yellow-600 text-white rounded-lg font-medium hover:bg-yellow-700 transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-6 py-3 bg-yellow-600 text-white rounded-lg font-medium hover:bg-yellow-700 transition-colors shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Lock className="w-5 h-5" />
                     {isChangingPassword ? 'Changing...' : 'Change Password'}
@@ -634,7 +751,7 @@ export default function Settings() {
                   </p>
                   <button
                     onClick={() => setShowDeleteConfirm(true)}
-                    className="px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors shadow-md hover:shadow-lg"
+                    className="px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors shadow-lg hover:shadow-xl"
                   >
                     Delete My Account
                   </button>
@@ -656,7 +773,7 @@ export default function Settings() {
                     <button
                       onClick={handleDeleteAccount}
                       disabled={deleteConfirmText !== 'DELETE'}
-                      className="px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Permanently Delete Account
                     </button>
