@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, User, MessageSquare, Newspaper, Type, Lock, AlertTriangle, Eye, EyeOff, Moon, Sun, Clock, Palette } from 'lucide-react';
+import { Save, User, MessageSquare, Newspaper, Type, Lock, AlertTriangle, Eye, EyeOff, Moon, Sun, Clock, Palette, RotateCcw } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -45,9 +45,15 @@ export default function Settings() {
   const [defaultEventHours, setDefaultEventHours] = useState(8);
   const [newsApiKey, setNewsApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
-  const [gradientColor1, setGradientColor1] = useState('#f5f5f4');
-  const [gradientColor2, setGradientColor2] = useState('#fafaf9');
+  const [gradientColor1, setGradientColor1] = useState('#FFC4DD');
+  const [gradientColor2, setGradientColor2] = useState('#D4C4F5');
   const [gradientAngle, setGradientAngle] = useState(135);
+
+  const DEFAULT_GRADIENT = {
+    color1: '#FFC4DD',
+    color2: '#D4C4F5',
+    angle: 135,
+  };
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -92,9 +98,9 @@ export default function Settings() {
       setTheme(data.theme || 'light');
       setDefaultEventHours(data.default_event_hours || 8);
       setNewsApiKey(data.news_api_key || '');
-      setGradientColor1(data.gradient_color_1 || '#f5f5f4');
-      setGradientColor2(data.gradient_color_2 || '#fafaf9');
-      setGradientAngle(data.gradient_angle ?? 135);
+      setGradientColor1(data.gradient_color_1 || DEFAULT_GRADIENT.color1);
+      setGradientColor2(data.gradient_color_2 || DEFAULT_GRADIENT.color2);
+      setGradientAngle(data.gradient_angle ?? DEFAULT_GRADIENT.angle);
       applyTheme(data.theme || 'light');
     } else {
       await createDefaultSettings();
@@ -114,9 +120,9 @@ export default function Settings() {
         font_family: 'inter',
         theme: 'light',
         default_event_hours: 8,
-        gradient_color_1: '#f5f5f4',
-        gradient_color_2: '#fafaf9',
-        gradient_angle: 135,
+        gradient_color_1: DEFAULT_GRADIENT.color1,
+        gradient_color_2: DEFAULT_GRADIENT.color2,
+        gradient_angle: DEFAULT_GRADIENT.angle,
       })
       .select()
       .single();
@@ -132,12 +138,18 @@ export default function Settings() {
       setTheme(data.theme || 'light');
       setDefaultEventHours(data.default_event_hours || 8);
       setNewsApiKey(data.news_api_key || '');
-      setGradientColor1(data.gradient_color_1 || '#f5f5f4');
-      setGradientColor2(data.gradient_color_2 || '#fafaf9');
-      setGradientAngle(data.gradient_angle ?? 135);
+      setGradientColor1(data.gradient_color_1 || DEFAULT_GRADIENT.color1);
+      setGradientColor2(data.gradient_color_2 || DEFAULT_GRADIENT.color2);
+      setGradientAngle(data.gradient_angle ?? DEFAULT_GRADIENT.angle);
       applyTheme(data.theme || 'light');
     }
   }
+
+  const handleResetGradient = () => {
+    setGradientColor1(DEFAULT_GRADIENT.color1);
+    setGradientColor2(DEFAULT_GRADIENT.color2);
+    setGradientAngle(DEFAULT_GRADIENT.angle);
+  };
 
   const applyTheme = (selectedTheme: string) => {
     if (selectedTheme === 'dark') {
@@ -264,7 +276,7 @@ export default function Settings() {
             <p className="text-slate-600 dark:text-slate-400">Customize your dashboard experience</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 space-y-8">
+          <div className="glass-card dark:glass-card-dark rounded-2xl shadow-2xl p-8 space-y-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 bg-blue-100 rounded-lg">
@@ -572,10 +584,19 @@ export default function Settings() {
                   />
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <p className="text-xs text-blue-800">
-                    <strong>Tip:</strong> Choose subtle, light colors for best readability. The gradient will be visible across your entire dashboard background.
-                  </p>
+                <div className="flex gap-2">
+                  <div className="flex-1 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p className="text-xs text-blue-800">
+                      <strong>Tip:</strong> Choose subtle, light colors for best readability. The gradient will be visible across your entire dashboard background.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleResetGradient}
+                    className="flex items-center gap-2 px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-medium transition-colors"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                    Reset to Default
+                  </button>
                 </div>
               </div>
             </div>
@@ -620,7 +641,7 @@ export default function Settings() {
             </div>
           </div>
 
-          <div className="mt-6 bg-white rounded-2xl shadow-2xl p-8 space-y-8">
+          <div className="mt-6 glass-card dark:glass-card-dark rounded-2xl shadow-2xl p-8 space-y-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 bg-yellow-100 rounded-lg">

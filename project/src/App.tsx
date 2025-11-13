@@ -10,10 +10,11 @@ import Documents from './components/Documents';
 import Finances from './components/Finances';
 import Settings from './components/Settings';
 import Brainstorm from './components/Brainstorm';
+import Notepad from './components/Notepad';
 import Navigation from './components/Navigation';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'calendar' | 'tasks' | 'timesheet' | 'clients' | 'documents' | 'finances' | 'settings' | 'brainstorm'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'calendar' | 'tasks' | 'timesheet' | 'clients' | 'documents' | 'finances' | 'settings' | 'brainstorm' | 'notepad'>('home');
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -43,6 +44,7 @@ export default function App() {
         {currentView === 'documents' && <Documents />}
         {currentView === 'finances' && <Finances />}
         {currentView === 'brainstorm' && <Brainstorm />}
+        {currentView === 'notepad' && <Notepad />}
         {currentView === 'settings' && <Settings />}
       </main>
     </div>

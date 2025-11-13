@@ -14,13 +14,14 @@ interface UserSettings {
 interface Reminder {
   id: string;
   title: string;
-  date: string;
+  date: string | null;
   notes: string | null;
   is_completed: boolean;
 }
 
 interface PostItNote {
   id: string;
+  title: string | null;
   content: string;
   color: string;
   position: number;
@@ -36,6 +37,7 @@ export default function Home() {
   const [newReminderDate, setNewReminderDate] = useState('');
   const [newReminderNotes, setNewReminderNotes] = useState('');
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [editingNoteTitleId, setEditingNoteTitleId] = useState<string | null>(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -127,9 +129,9 @@ export default function Home() {
     if (!user) return;
 
     const defaultNotes = [
-      { user_id: user.id, content: '', color: '#FFE5E5', position: 1 },
-      { user_id: user.id, content: '', color: '#E5F3FF', position: 2 },
-      { user_id: user.id, content: '', color: '#FFFDE5', position: 3 },
+      { user_id: user.id, content: '', color: '#FFB3BA', position: 1 },
+      { user_id: user.id, content: '', color: '#BAE1FF', position: 2 },
+      { user_id: user.id, content: '', color: '#FFFFBA', position: 3 },
     ];
 
     const { error } = await supabase
@@ -145,13 +147,13 @@ export default function Home() {
 
 
   const handleAddReminder = async () => {
-    if (!newReminderTitle.trim() || !newReminderDate) return;
+    if (!newReminderTitle.trim()) return;
 
     const { error } = await supabase
       .from('reminders')
       .insert({
         title: newReminderTitle.trim(),
-        date: newReminderDate,
+        date: newReminderDate || null,
         notes: newReminderNotes.trim() || null,
         user_id: user?.id,
       });
@@ -207,6 +209,20 @@ export default function Home() {
     }
   };
 
+  const handleUpdatePostItTitle = async (id: string, title: string) => {
+    const { error } = await supabase
+      .from('post_it_notes')
+      .update({ title: title.trim() || null, updated_at: new Date().toISOString() })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error updating post-it note title:', error);
+    } else {
+      await fetchPostItNotes();
+      setEditingNoteTitleId(null);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const today = new Date();
@@ -241,7 +257,7 @@ export default function Home() {
             <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300">{settings?.welcome_message || 'Welcome back!'}</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 mb-8">
+          <div className="glass-card dark:glass-card-dark rounded-2xl shadow-2xl p-6 mb-8">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
                 <CalendarIcon className="w-6 h-6 text-blue-600" />
@@ -270,6 +286,7 @@ export default function Home() {
                   type="date"
                   value={newReminderDate}
                   onChange={(e) => setNewReminderDate(e.target.value)}
+                  placeholder="Date (optional)..."
                   className="w-full px-4 py-2 mb-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-600 text-slate-900 dark:text-slate-100"
                 />
                 <textarea
@@ -343,7 +360,7 @@ export default function Home() {
                       >
                         {reminder.title}
                       </h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">{formatDate(reminder.date)}</p>
+                      {reminder.date && <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">{formatDate(reminder.date)}</p>}
                       {reminder.notes && (
                         <p className="text-sm text-slate-500 dark:text-slate-400">{reminder.notes}</p>
                       )}
@@ -372,33 +389,64 @@ export default function Home() {
                   boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
                 }}
               >
-                <div className="p-6 min-h-[250px] rounded-lg">
+                <div className="p-6 min-h-[280px] rounded-lg relative overflow-hidden flex flex-col">
+                  <div className="absolute inset-0 pointer-events-none" style={{
+                    backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, rgba(0, 0, 0, 0.08) 31px, rgba(0, 0, 0, 0.08) 32px)',
+                    backgroundSize: '100% 32px',
+                    backgroundPosition: '0 6px'
+                  }} />
+
+                  {editingNoteTitleId === note.id ? (
+                    <input
+                      type="text"
+                      defaultValue={note.title || ''}
+                      onBlur={(e) => handleUpdatePostItTitle(note.id, e.target.value)}
+                      autoFocus
+                      placeholder="Add title..."
+                      className="w-full mb-3 px-2 py-1 bg-transparent border-2 border-slate-300 rounded focus:outline-none focus:border-slate-500 font-bold text-slate-800 relative z-10"
+                    />
+                  ) : (
+                    <div
+                      onClick={() => setEditingNoteTitleId(note.id)}
+                      className="cursor-text mb-3 relative z-10"
+                    >
+                      {note.title ? (
+                        <h3 className="font-bold text-slate-800 text-lg border-b-2 border-slate-800/20 pb-1">
+                          {note.title}
+                        </h3>
+                      ) : (
+                        <p className="text-slate-500 text-sm italic">Click to add title...</p>
+                      )}
+                    </div>
+                  )}
+
                   {editingNoteId === note.id ? (
-                    <div className="h-full flex flex-col">
+                    <div className="flex-1 flex flex-col">
                       <textarea
                         defaultValue={note.content}
                         onBlur={(e) => handleUpdatePostIt(note.id, e.target.value)}
                         autoFocus
-                        className="w-full h-full p-2 bg-transparent border-2 border-slate-300 rounded resize-none focus:outline-none focus:border-slate-500 font-handwriting text-slate-700"
+                        className="w-full flex-1 p-2 bg-transparent border-2 border-slate-300 rounded resize-none focus:outline-none focus:border-slate-500 font-handwriting text-slate-800 relative z-10"
                         placeholder="Write a note..."
+                        style={{ lineHeight: '32px', minHeight: '180px' }}
                       />
                     </div>
                   ) : (
                     <div
                       onClick={() => setEditingNoteId(note.id)}
-                      className="cursor-text h-full"
+                      className="cursor-text flex-1 relative z-10"
                     >
                       {note.content ? (
-                        <p className="whitespace-pre-wrap font-handwriting text-slate-700">
+                        <p className="whitespace-pre-wrap font-handwriting text-slate-800" style={{ lineHeight: '32px' }}>
                           {note.content}
                         </p>
                       ) : (
-                        <p className="text-slate-400 font-handwriting">Click to add a note...</p>
+                        <p className="text-slate-500 font-handwriting">Click to add a note...</p>
                       )}
                     </div>
                   )}
                 </div>
-                {!editingNoteId && (
+                {!editingNoteId && !editingNoteTitleId && (
                   <button
                     onClick={() => setEditingNoteId(note.id)}
                     className="absolute top-2 right-2 p-2 bg-white/50 backdrop-blur-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/80 backdrop-blur-sm"

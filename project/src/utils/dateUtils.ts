@@ -33,6 +33,12 @@ export function formatDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+export function formatDateToLocal(date: Date): string {
+  const offset = date.getTimezoneOffset();
+  const localDate = new Date(date.getTime() - (offset * 60 * 1000));
+  return localDate.toISOString().split('T')[0];
+}
+
 export function parseDate(dateString: string): Date {
   return new Date(dateString + 'T00:00:00');
 }

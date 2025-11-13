@@ -313,7 +313,7 @@ export default function TimeSheet() {
             <p className="text-slate-600 dark:text-slate-300">Track your work hours by client and task</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 mb-6">
+          <div className="glass-card dark:glass-card-dark rounded-2xl shadow-2xl p-8 mb-6">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <Clock className="w-8 h-8 text-blue-600" />
@@ -386,7 +386,7 @@ export default function TimeSheet() {
             )}
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 mb-6">
+          <div className="glass-card dark:glass-card-dark rounded-2xl shadow-2xl p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
                 <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">Time Entries</h3>

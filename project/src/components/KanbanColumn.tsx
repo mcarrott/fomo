@@ -35,28 +35,28 @@ export default function KanbanColumn({
   const getColumnColor = () => {
     switch (status) {
       case 'todo':
-        return 'border-slate-300';
+        return 'glass-column-pink';
       case 'in_progress':
-        return 'border-blue-300';
+        return 'glass-column-blue';
       case 'done':
-        return 'border-green-300';
+        return 'glass-column-purple';
     }
   };
 
   const getHeaderColor = () => {
     switch (status) {
       case 'todo':
-        return 'bg-slate-50 text-slate-700';
+        return 'text-slate-800';
       case 'in_progress':
-        return 'bg-blue-50 text-blue-700';
+        return 'text-blue-800';
       case 'done':
-        return 'bg-green-50 text-green-700';
+        return 'text-purple-800';
     }
   };
 
   return (
     <div
-      className={`bg-white rounded-xl shadow-lg border-2 ${getColumnColor()} flex flex-col`}
+      className={`rounded-xl shadow-lg ${getColumnColor()} flex flex-col`}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >

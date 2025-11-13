@@ -14,8 +14,8 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState('light');
-  const [gradientColor1, setGradientColor1] = useState('#f5f5f4');
-  const [gradientColor2, setGradientColor2] = useState('#fafaf9');
+  const [gradientColor1, setGradientColor1] = useState('#FFC4DD');
+  const [gradientColor2, setGradientColor2] = useState('#D4C4F5');
   const [gradientAngle, setGradientAngle] = useState(135);
 
   useEffect(() => {
@@ -45,8 +45,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
 
     applyGradient(
-      data?.gradient_color_1 || '#f5f5f4',
-      data?.gradient_color_2 || '#fafaf9',
+      data?.gradient_color_1 || '#FFC4DD',
+      data?.gradient_color_2 || '#D4C4F5',
       data?.gradient_angle ?? 135
     );
   };

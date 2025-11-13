@@ -131,7 +131,7 @@ export default function ClientManagement() {
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 mb-6">
+          <div className="glass-card dark:glass-card-dark rounded-2xl shadow-2xl p-6 mb-6">
             <div className="mb-6">
               <input
                 type="text"
@@ -157,7 +157,7 @@ export default function ClientManagement() {
                 {filteredClients.map(client => (
                   <div
                     key={client.id}
-                    className="group bg-white border-2 border-slate-200 rounded-xl p-5 hover:shadow-lg transition-all hover:border-slate-300"
+                    className="group glass-card dark:glass-card-dark border-2 border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-lg transition-all hover:border-slate-300 dark:hover:border-slate-600"
                     style={{
                       borderLeftWidth: '6px',
                       borderLeftColor: client.color,
@@ -231,7 +231,7 @@ export default function ClientManagement() {
             )}
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6">
+          <div className="glass-card dark:glass-card-dark rounded-2xl shadow-xl p-6">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-bold text-slate-800 mb-1">Total Clients</h3>

@@ -129,7 +129,7 @@ export default function Documents() {
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 mb-6">
+          <div className="glass-card dark:glass-card-dark rounded-2xl shadow-2xl p-6 mb-6">
             <div className="flex flex-col md:flex-row gap-4 mb-6">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -173,7 +173,7 @@ export default function Documents() {
                 {filteredDocuments.map(doc => (
                   <div
                     key={doc.id}
-                    className="group bg-white border-2 border-slate-200 rounded-xl p-5 hover:shadow-xl transition-all hover:border-slate-300"
+                    className="group glass-card dark:glass-card-dark border-2 border-slate-200 dark:border-slate-700 rounded-xl p-5 hover:shadow-xl transition-all hover:border-slate-300 dark:hover:border-slate-600"
                   >
                     <div className="flex items-start gap-4 mb-4">
                       <div className="flex-shrink-0">
@@ -238,7 +238,7 @@ export default function Documents() {
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {CATEGORIES.filter(c => c.value !== 'all').map(cat => (
-              <div key={cat.value} className="bg-white rounded-xl shadow-xl p-4">
+              <div key={cat.value} className="glass-card dark:glass-card-dark rounded-xl shadow-xl p-4">
                 <div className="text-sm text-slate-600 mb-1">{cat.label}</div>
                 <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
                   {getCategoryCount(cat.value)}

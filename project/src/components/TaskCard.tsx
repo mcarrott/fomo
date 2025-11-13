@@ -61,7 +61,7 @@ export default function TaskCard({ task, onDragStart, onEdit, onDelete }: TaskCa
       className={`group border-2 rounded-lg p-4 hover:shadow-xl transition-all cursor-move ${
         isDone
           ? 'bg-slate-100 border-slate-300 opacity-60'
-          : 'bg-white border-slate-200 hover:border-slate-300'
+          : 'glass-card hover:border-slate-300'
       }`}
       style={{
         borderLeftWidth: '4px',

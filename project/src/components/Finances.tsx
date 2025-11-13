@@ -228,7 +228,7 @@ export default function Finances() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl p-6">
+            <div className="glass-card dark:glass-card-dark rounded-xl shadow-xl p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-slate-600 dark:text-slate-300">Monthly Expenses</span>
                 <DollarSign className="w-5 h-5 text-green-600" />
@@ -241,7 +241,7 @@ export default function Finances() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl p-6">
+            <div className="glass-card dark:glass-card-dark rounded-xl shadow-xl p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-slate-600 dark:text-slate-300">Yearly Expenses</span>
                 <DollarSign className="w-5 h-5 text-blue-600" />
@@ -254,7 +254,7 @@ export default function Finances() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl p-6">
+            <div className="glass-card dark:glass-card-dark rounded-xl shadow-xl p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-slate-600 dark:text-slate-300">Total Documents</span>
                 <FileText className="w-5 h-5 text-purple-600" />
@@ -268,7 +268,7 @@ export default function Finances() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 mb-8">
+          <div className="glass-card dark:glass-card-dark rounded-2xl shadow-2xl p-6 mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">Subscriptions</h2>
@@ -290,7 +290,7 @@ export default function Finances() {
             />
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6">
+          <div className="glass-card dark:glass-card-dark rounded-2xl shadow-2xl p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">Financial Documents</h2>

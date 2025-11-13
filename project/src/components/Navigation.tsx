@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Home as HomeIcon, Calendar as CalendarIcon, ListTodo, Clock, Users, FileText, Wallet, Settings as SettingsIcon, LogOut, Menu, X, Lightbulb } from 'lucide-react';
+import { Home as HomeIcon, Calendar as CalendarIcon, ListTodo, Clock, Users, FileText, Wallet, Settings as SettingsIcon, LogOut, Menu, X, Lightbulb, BookOpen } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface NavigationProps {
-  currentView: 'home' | 'calendar' | 'tasks' | 'timesheet' | 'clients' | 'documents' | 'finances' | 'settings' | 'brainstorm';
-  onViewChange: (view: 'home' | 'calendar' | 'tasks' | 'timesheet' | 'clients' | 'documents' | 'finances' | 'settings' | 'brainstorm') => void;
+  currentView: 'home' | 'calendar' | 'tasks' | 'timesheet' | 'clients' | 'documents' | 'finances' | 'settings' | 'brainstorm' | 'notepad';
+  onViewChange: (view: 'home' | 'calendar' | 'tasks' | 'timesheet' | 'clients' | 'documents' | 'finances' | 'settings' | 'brainstorm' | 'notepad') => void;
 }
 
 export default function Navigation({ currentView, onViewChange }: NavigationProps) {
@@ -20,6 +20,7 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
     { id: 'documents' as const, icon: FileText, label: 'Documents' },
     { id: 'finances' as const, icon: Wallet, label: 'Finances' },
     { id: 'brainstorm' as const, icon: Lightbulb, label: 'Brainstorm' },
+    { id: 'notepad' as const, icon: BookOpen, label: 'Notepad' },
     { id: 'settings' as const, icon: SettingsIcon, label: 'Settings' },
   ];
 
@@ -33,7 +34,7 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 glass-card dark:glass-card-dark rounded-lg shadow-lg"
       >
         {isMobileMenuOpen ? (
           <X className="w-6 h-6 text-slate-600 dark:text-slate-300" />
@@ -53,7 +54,7 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 shadow-xl z-40
+          fixed top-0 left-0 h-full w-64 glass-card dark:glass-card-dark shadow-xl z-40
           transition-transform duration-300 ease-in-out
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}

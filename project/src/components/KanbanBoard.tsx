@@ -281,7 +281,7 @@ export default function KanbanBoard() {
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 mb-6">
+          <div className="glass-card dark:glass-card-dark rounded-2xl shadow-2xl p-6 mb-6">
             <div className="flex items-center justify-between gap-6">
               <div className="flex items-center gap-3">
                 <div className="flex bg-slate-100 dark:bg-slate-700 rounded-lg p-1">

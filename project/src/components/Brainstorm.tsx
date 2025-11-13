@@ -188,7 +188,7 @@ export default function Brainstorm() {
         </div>
 
         {cards.length === 0 ? (
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-12 text-center">
+          <div className="glass-card dark:glass-card-dark rounded-2xl shadow-2xl p-12 text-center">
             <div className="max-w-md mx-auto">
               <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Lightbulb className="w-8 h-8 text-slate-400" />
@@ -214,7 +214,7 @@ export default function Brainstorm() {
               <div
                 key={card.id}
                 onClick={() => handleCardClick(card)}
-                className="group bg-white dark:bg-slate-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all cursor-pointer overflow-hidden border-2 border-transparent hover:border-blue-400"
+                className="group glass-card dark:glass-card-dark rounded-2xl shadow-xl hover:shadow-2xl transition-all cursor-pointer overflow-hidden border-2 border-transparent hover:border-blue-400"
                 style={{ borderTopColor: card.color, borderTopWidth: '4px' }}
               >
                 <div className="p-6">

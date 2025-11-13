@@ -117,7 +117,7 @@ export default function NewsFeed() {
 
   if (!enabled) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 h-full">
+      <div className="glass-card dark:glass-card-dark rounded-lg shadow-lg p-6 h-full">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Newspaper className="w-5 h-5 text-slate-400" />
@@ -159,7 +159,7 @@ export default function NewsFeed() {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 h-full flex flex-col">
+    <div className="glass-card dark:glass-card-dark rounded-lg shadow-lg p-6 h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Newspaper className="w-5 h-5 text-blue-600" />
