@@ -56,6 +56,14 @@ export default function Notepad() {
       console.error('Error fetching notepad pages:', error);
     } else if (data) {
       setPages(data as NotepadPage[]);
+
+      const clientIds = new Set<string>();
+      (data as NotepadPage[]).forEach(page => {
+        if (page.client_id) {
+          clientIds.add(page.client_id);
+        }
+      });
+      setExpandedFolders(clientIds);
     }
   }
 
