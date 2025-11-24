@@ -58,9 +58,12 @@ export default function Finances() {
   }, [user]);
 
   async function fetchProfessionalSubscriptions() {
+    if (!user) return;
+
     const { data, error } = await supabase
       .from('subscriptions')
       .select('*')
+      .eq('user_id', user.id)
       .order('name');
 
     if (error) {
@@ -124,11 +127,8 @@ export default function Finances() {
     const insertData: any = {
       name: 'New Subscription',
       is_active: true,
+      user_id: user?.id,
     };
-
-    if (!isProfessional) {
-      insertData.user_id = user?.id;
-    }
 
     const { data, error } = await supabase
       .from(tableName)
